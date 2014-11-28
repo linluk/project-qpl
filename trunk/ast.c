@@ -30,6 +30,23 @@ static const char* at_params_str = "params";
 static const char* at_end_str = "end";
 static const char* at_unknown_str = "unknown";
 
+/* operator strings, these are returned by get_op_str() */
+static const char* op_add_str = "+";
+static const char* op_sub_str = "-";
+static const char* op_mul_str = "*";
+static const char* op_div_str = "/";
+static const char* op_mod_str = "%";
+static const char* op_lt_str = "<";
+static const char* op_gt_str = ">";
+static const char* op_le_str = "<=";
+static const char* op_ge_str = ">=";
+static const char* op_eq_str = "==";
+static const char* op_neq_str = "!=";
+static const char* op_and_str = "&";
+static const char* op_or_str = "|";
+static const char* op_cat_str = "$";
+static const char* op_unknown_str = "unknown";
+
 /* prototypes */
 ast_t* create_ast(ast_type_t type);
 
@@ -207,6 +224,10 @@ ast_t* create_param(ast_t* params, ast_t* param) {
   return params;
 }
 
+int is_numeric_ast_type(ast_type_t ast) {
+  return (ast == at_double) || (ast == at_integer);
+}
+
 const char* get_ast_type_name(ast_type_t ast) {
   switch(ast) {
     case at_assignment: return at_assignment_str;
@@ -231,88 +252,109 @@ const char* get_ast_type_name(ast_type_t ast) {
   }
 }
 
+const char* get_op_str(operator_t op) {
+  switch(op) {
+    case op_add: return op_add_str;
+    case op_sub: return op_sub_str;
+    case op_mul: return op_mul_str;
+    case op_div: return op_div_str;
+    case op_mod: return op_mod_str;
+    case op_lt: return op_lt_str;
+    case op_gt: return op_gt_str;
+    case op_le: return op_le_str;
+    case op_ge: return op_ge_str;
+    case op_eq: return op_eq_str;
+    case op_neq: return op_neq_str;
+    case op_and: return op_and_str;
+    case op_or: return op_or_str;
+    case op_cat: return op_cat_str;
+    default: return op_unknown_str;
+  }
+}
+
 void print_ast(ast_t* ast, int indent){
   size_t i;
   for(i = 0; i < indent; i++) {
     printf(" ");
   }
   if(ast != NULL) {
+    const char* tn = get_ast_type_name(ast->type);
     switch(ast->type) {
       case at_identifier:
-        printf("identifier: %s\n",ast->data.id);
+        printf("%s: %s\n",tn,ast->data.id);
         break;
       case at_integer:
-        printf("integer: %d\n",ast->data.i);
+        printf("%s: %d\n",tn,ast->data.i);
         break;
       case at_double:
-        printf("double: %f\n",ast->data.d);
+        printf("%s: %f\n",tn,ast->data.d);
         break;
       case at_string:
-        printf("string: \"%s\"\n",ast->data.s);
+        printf("%s: \"%s\"\n",tn,ast->data.s);
         break;
       case at_bool:
-        printf("bool: %s\n",ast->data.b > 0 ? "true" : "false");
+        printf("%s: %s\n",tn,ast->data.b > 0 ? "true" : "false");
         break;
       case at_expression:
-        printf("expression: op%d\n",ast->data.expression.op);
+        printf("%s: %s\n",tn,get_op_str(ast->data.expression.op));
         print_ast(ast->data.expression.left,indent+2);
         print_ast(ast->data.expression.right,indent+2);
         break;
       case at_assignment:
-        printf("assignment: %s\n",ast->data.assignment.id);
+        printf("%s: %s\n",tn,ast->data.assignment.id);
         print_ast(ast->data.assignment.right,indent+2);
         break;
       case at_call:
-        printf("call:\n");
+        printf("%s:\n",tn);
         print_ast(ast->data.call.id,indent+2);
         print_ast(ast->data.call.callargs,indent+2);
         break;
       case at_callargs:
-        printf("callargs:\n");
+        printf("%s:\n",tn);
         for(i = 0; i < ast->data.callargs.count; i++) {
           print_ast(ast->data.callargs.callargs[i],indent+2);
         }
         break;
       case at_statements:
-        printf("statements:\n");
+        printf("%s:\n",tn);
         for(i = 0; i < ast->data.statements.count; i++) {
           print_ast(ast->data.statements.statements[i],indent+2);
         }
         break;
       case at_conditional:
-        printf("conditional:\n");
+        printf("%s:\n",tn);
         print_ast(ast->data.conditional.if_statement,indent+2);
         print_ast(ast->data.conditional.elif_statements,indent+2);
         print_ast(ast->data.conditional.else_statement,indent+2);
         break;
       case at_if:
-        printf("if:\n");
+        printf("%s:\n",tn);
         print_ast(ast->data.if_statement.condition,indent+2);
         print_ast(ast->data.if_statement.statements,indent+2);
         break;
       case at_elif:
-        printf("elif: %d\n",ast->data.elif_statements.count);
+        printf("%s: %d\n",tn,ast->data.elif_statements.count);
         for(i = 0; i < ast->data.elif_statements.count; i++) {
           print_ast(ast->data.elif_statements.elif_statements[i],indent+2);
         }
         break;
       case at_while:
-        printf("while:\n");
+        printf("%s:\n",tn);
         print_ast(ast->data.while_statement.condition,indent+2);
         print_ast(ast->data.while_statement.statements,indent+2);
         break;
       case at_dowhile:
-        printf("do-while:\n");
+        printf("%s:\n",tn);
         print_ast(ast->data.dowhile_statement.condition,indent+2);
         print_ast(ast->data.dowhile_statement.statements,indent+2);
         break;
       case at_function:
-        printf("function:\n");
+        printf("%s:\n",tn);
         print_ast(ast->data.function.params,indent+2);
         print_ast(ast->data.function.statements,indent+2);
         break;
       case at_params:
-        printf("params: %d ( ",ast->data.params.count);
+        printf("%s: %d ( ",tn,ast->data.params.count);
         for(i = 0; i < ast->data.params.count; i++) {
           if(i != 0) {
             printf(", ");
@@ -322,7 +364,7 @@ void print_ast(ast_t* ast, int indent){
         printf(")\n");
         break;
       default:
-        fprintf(stderr,"warning: unknown ast type: %d\n", ast->type);
+        fprintf(stderr,"warning: unknown ast type: %s:%d\n", tn, (int)ast->type);
         exit(1);
         break;
     }
