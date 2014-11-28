@@ -119,6 +119,9 @@ ast_t* create_function(ast_t* params, ast_t* statements);
 ast_t* create_param(ast_t* params, ast_t* id);
 
 const char* get_ast_type_name(ast_type_t ast);
+const char* get_op_str(operator_t op);
+
+int is_numeric_ast_type(ast_type_t ast);
 
 void print_ast(ast_t* ast, int indent);
 

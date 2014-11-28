@@ -3,6 +3,7 @@
 
 #include "ast.h"
 #include "vm.h"
+#include "env.h"
 
 #include "lexer.h"
 #include "parser.h"
