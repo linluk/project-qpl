@@ -14,18 +14,19 @@
 
 /* prototypes */
 
-ast_t* create_ast(ast_type_t type);
+ast_t* runtime_create_ast(ast_type_t type);
 
 
 void exec_statements(env_t* env, ast_t* ast);
 void exec_assignment(env_t* env, ast_t* ast);
+ast_t* eval_call(env_t* env, ast_t* ast);
 ast_t* eval_expression(env_t* env, ast_t* ast);
 ast_t* eval_add(env_t* env, ast_t* ast1, ast_t* ast2);
 ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2);
 
 /* prototypes in "vm.c" */
 
-ast_t* create_ast(ast_type_t type) {
+ast_t* runtime_create_ast(ast_type_t type) {
   ast_t* ast;
   ast = check_malloc(sizeof(ast_t));
   ast->type = type;
@@ -41,11 +42,15 @@ ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
 
 }
 
+ast_t* eval_call(env_t* env, ast_t* ast) {
+
+}
+
 ast_t* eval_expression(env_t* env, ast_t* ast) {
   switch(ast->type) {
     /* valid */
     case at_bool: return ast;
-    case at_call: return exec_call(env,ast);
+    case at_call: return eval_call(env,ast);
     case at_identifier: return (ast_t*)get_value(env->map, ast->data.id);
     case at_double: return ast;
     case at_expression: 

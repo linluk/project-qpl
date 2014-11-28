@@ -1,4 +1,6 @@
 %option noyywrap
+%option nounput
+%option noinput
 %option outfile="lexer.c" header-file="lexer.h"
 
 %{
