@@ -10,10 +10,13 @@
 /* own */
 #include "ast.h"
 
+#include "lexer.h"
 
 #define YYDEBUG (1)
-#define YYPARSE_PARAM ast_dest
+
 %}
+
+%parse-param { ast_t** ast_dest }
 
 /* this union defines the yyval structure -> the $$, $1..$N values */
 %union {
@@ -43,7 +46,7 @@
 
 %{
 
-void yyerror(const char* const emsg);
+void yyerror(ast_t** ast, const char* const emsg);
 
 %}
 
@@ -142,7 +145,7 @@ non_empty_params : T_ID { $$ = create_identifier($1); }
 
 %%
 
-void yyerror(const char* const emsg) {
+void yyerror(ast_t** ast, const char* const emsg) {
   fprintf(stderr, "parse error: \"%s\"\n", emsg);
   exit(1);
 }

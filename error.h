@@ -3,8 +3,8 @@
 
 #include "ast.h"
 
-void error_expected(position_t* pos, char* expected, char* received);
+void error_expected(position_t* pos, const char* expected, const char* received);
 
-void error_cannot_assign(position_t* pos, char* from, char* to);
+void error_cannot_assign(position_t* pos, const char* from, const char* to);
 
 #endif /* __ERROR_H__ */

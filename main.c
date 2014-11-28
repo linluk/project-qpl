@@ -2,12 +2,12 @@
 
 
 #include "ast.h"
-
 #include "vm.h"
 
 #include "lexer.h"
 #include "parser.h"
 
+int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 
 int main(int argc, char** argv) {
 
