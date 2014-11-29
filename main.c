@@ -5,10 +5,9 @@
 #include "vm.h"
 #include "env.h"
 
+int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 #include "lexer.h"
 #include "parser.h"
-
-int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 
 int main(int argc, char** argv) {
 
@@ -43,7 +42,15 @@ int main(int argc, char** argv) {
 
     vm_exec(env, ast);
 
-    free_ast(ast);
+//    free_ast(ast); // free ast didnt work, because vm_exec() restructures the ast
+                     // therefor it could be that there are more than one pointers
+                     // pointing to the same memory. then when i free the ast
+                     // every pointer get freed --> double free memory --> ggrrrrr!
+                     //  WHAT IS MY SOLUTION ? ? ? ?
+                     //
+                     //  is this really the problem?? think about it again !!
+                     //  does vm_exec() really changes the ast?? that would be
+                     //  dangerous at all: think about a loop
     free_env(env);
 
   } else {
