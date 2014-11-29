@@ -5,6 +5,7 @@
 
 /* own */
 #include "utils.h"
+#include "error.h"
 
 /* self */
 #include "ast.h"
@@ -127,10 +128,21 @@ ast_t* create_statement(ast_t* statements, ast_t* statement) {
   return statements;
 }
 
-ast_t* create_call(ast_t* id, ast_t* callargs) {
+ast_t* create_call(char* id, ast_t* function, ast_t* callargs) {
   ast_t* ast;
   ast = create_ast(at_call);
-  ast->data.call.id = id;
+  if(id != NULL) {
+    ast->data.call.call_type = ct_named;
+    ast->data.call.function.id = id;
+  } else {
+    if(function != NULL) {
+      ast->data.call.call_type = ct_anonymous;
+      ast->data.call.function.function = function;
+    } else {
+      fprintf(stderr, "ast generation error\n");
+      exit(1);
+    }
+  }
   ast->data.call.callargs = callargs;
   return ast;
 }
@@ -208,7 +220,7 @@ ast_t* create_function(ast_t* params, ast_t* statements) {
   return ast;
 }
 
-ast_t* create_param(ast_t* params, ast_t* param) {
+ast_t* create_param(ast_t* params, char* param) {
   if(params == NULL) {
     params = create_ast(at_params);
     params->data.params.count = 0;
@@ -219,7 +231,7 @@ ast_t* create_param(ast_t* params, ast_t* param) {
     exit(1);
   }
   params->data.params.count++;
-  params->data.params.params = (ast_t**)check_realloc(params->data.params.params, params->data.params.count * sizeof(ast_t*));
+  params->data.params.params = (char**)check_realloc(params->data.params.params, params->data.params.count * sizeof(char*));
   params->data.params.params[params->data.params.count - 1] = param;
   return params;
 }
@@ -305,12 +317,19 @@ void print_ast(ast_t* ast, int indent){
         print_ast(ast->data.assignment.right,indent+2);
         break;
       case at_call:
-        printf("%s:\n",tn);
-        print_ast(ast->data.call.id,indent+2);
+        switch(ast->data.call.call_type) {
+          case ct_anonymous:
+            printf("%s: <anonymous>\n", tn);
+            print_ast(ast->data.call.function.function, indent+2);
+            break;
+          case ct_named:
+            printf("%s: %s\n",tn, ast->data.call.function.id);
+            break;
+        }
         print_ast(ast->data.call.callargs,indent+2);
         break;
       case at_callargs:
-        printf("%s:\n",tn);
+        printf("%s: %d\n",tn, ast->data.callargs.count);
         for(i = 0; i < ast->data.callargs.count; i++) {
           print_ast(ast->data.callargs.callargs[i],indent+2);
         }
@@ -359,7 +378,7 @@ void print_ast(ast_t* ast, int indent){
           if(i != 0) {
             printf(", ");
           }
-          print_ast(ast->data.params.params[i],indent+2);
+          printf(ast->data.params.params[i]);
         }
         printf(")\n");
         break;
@@ -399,7 +418,14 @@ void free_ast(ast_t* ast) {
         break;
         break;
       case at_call:
-        free(ast->data.call.id);
+        switch(ast->data.call.call_type) {
+          case ct_anonymous:
+            free_ast(ast->data.call.function.function);
+            break;
+          case ct_named:
+            free(ast->data.call.function.id);
+            break;
+        }
         free_ast(ast->data.call.callargs);
         break;
       case at_callargs:

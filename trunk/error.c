@@ -37,3 +37,18 @@ void error_apply(position_t* pos, const char* op, const char* arg1, const char* 
   sprintf(buf,"cannot apply \"%s\" to \"%s\" and \"%s\"", op, arg1, arg2);
   error(pos,buf);
 }
+
+void error_id(position_t* pos, const char* id) {
+  char buf[250];
+  sprintf(buf,"identifier \"%s\" not found", id);
+  error(pos,buf);
+}
+
+void error_paramcount(position_t* pos, const char* func, int paramcount, int callargcount) {
+  char buf[250];
+  sprintf(buf,"function \"%s\" expects %d arguments, called with %d", func, paramcount, callargcount);
+  error(pos,buf);
+}
+
+
+

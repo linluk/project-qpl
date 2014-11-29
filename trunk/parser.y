@@ -41,6 +41,7 @@
 %token<s> T_STRING
 %token<b> T_BOOL
 %type<ast> statement statements assignment expression term factor conditional if_statement elif_statement elif_statements else_statement loop while_loop do_while_loop block call callargs non_empty_callargs function params non_empty_params
+%type<id> assignleft
 
 %start program
 
@@ -65,9 +66,12 @@ statement : assignment T_DELIMITER { $$ = $1; }
           | call T_DELIMITER { $$ = $1; }
           ;
 
-assignment : T_ID T_ASSIGN expression { $$ = create_assignment($1, $3); /* variable */ }
-           | T_ID T_ASSIGN function { $$ = create_assignment($1, $3); /* function */ }
+assignment : assignleft T_ASSIGN expression { $$ = create_assignment($1, $3); /* variable */ }
+           | assignleft T_ASSIGN function { $$ = create_assignment($1, $3); /* function */ }
            ;
+
+assignleft : T_ID { $$ = $1; }
+           | T_AT { $$ = "@"; }
 
 expression : term T_CMPOP expression { $$ = create_expression($2, $1, $3); }
            | term T_STROP expression { $$ = create_expression($2, $1, $3); }
@@ -120,15 +124,15 @@ do_while_loop : T_DO block T_LPAREN expression T_RPAREN { $$ = create_dowhile($4
 block : T_LBRACKET statements T_RBRACKET { $$ = $2; }
       ;
 
-call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call(create_identifier($1), $3); }
-     | function T_LPAREN callargs T_RPAREN { $$ = create_call($1, $3); }
+call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($1, NULL, $3); }
+     | function T_LPAREN callargs T_RPAREN { $$ = create_call(NULL, $1, $3); }
      ;
 
 callargs : non_empty_callargs { $$ = $1; }
          | { $$ = NULL; }
          ;
 
-non_empty_callargs : expression { $$ = $1; }
+non_empty_callargs : expression { $$ = create_callarg(NULL, $1); }
                   | non_empty_callargs T_COMMA expression { $$ = create_callarg($1, $3); }
                   ;
 
@@ -139,8 +143,8 @@ params : non_empty_params { $$ = $1; }
        | { $$ = NULL; }
        ;
 
-non_empty_params : T_ID { $$ = create_identifier($1); }
-                 | non_empty_params T_COMMA T_ID { $$ = create_param($1, create_identifier($3)); }
+non_empty_params : T_ID { $$ = create_param(NULL, $1); }
+                 | non_empty_params T_COMMA T_ID { $$ = create_param($1, $3); }
                  ;
 
 %%
