@@ -30,10 +30,12 @@
 /* own */
 #include "utils.h"
 #include "map.h"
+#include "ast.h"
 
 /* self */
 #include "env.h"
 
+/* prototypes in "env.h" */
 env_t* create_env(void) {
   env_t* env;
   env = (env_t*)check_malloc(sizeof(env_t));
@@ -47,22 +49,22 @@ void free_env(env_t* env) {
   free(env);
 }
 
-ast_t* get_ast_by_id(env_t* env, char* id) {
+ast_t* get_ast_by_id(env_t* env, const char* id) {
   ast_t* ast;
-  ast = get_value(env->map, id);
+  ast = (ast_t*)get_value(env->map, id);
   if(ast == NULL && env->parent != NULL) {
     ast = get_ast_by_id(env->parent, id);
   }
   return ast;
 }
 
-void set_ast_to_id(env_t* env, char* id, ast_t* ast) {
+void set_ast_to_id(env_t* env, const char* id, ast_t* ast) {
   ast_t* old;
-  old = add_value(env->map, id, ast);
+  old = (ast_t*)add_value(env->map, id, ast);
   if(old != NULL) {
     if(old->ref_count > 0) {
-      old->ref_count--;
-      if(old->ref_count == 0) { 
+      ast->ref_count--;
+      if(ast->ref_count == 0) {
         free_ast(old);
       }
     }

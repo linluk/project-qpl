@@ -75,5 +75,10 @@ void error_paramcount(position_t* pos, const char* func, int paramcount, int cal
   error(pos,buf);
 }
 
+void error_unsupported(position_t* pos, const char* unsupported) {
+  char buf[250];
+  sprintf(buf,"unsupported feature: \"%s\"",unsupported);
+  error(pos,buf);
+}
 
 

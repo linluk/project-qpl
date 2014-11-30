@@ -38,18 +38,16 @@
 /* self */
 #include "vm.h"
 
-#define PARANOID_AST_TYPE_CHECK
+#define PARANOID_TYPE_CHECK
 
 ast_t* eval_call(env_t* env, ast_t* ast) {
-  env_t* inner;
   ast_t* func;
   ast_t* result;
   char* fn;  /* function name */
-  int i;
   switch(ast->data.call.call_type) {
     case ct_anonymous:
-      func = ast->data.call.function.function;
       fn = "<anonymous>";
+      func = ast->data.call.function.function;
       break;
     case ct_named:
       fn = ast->data.call.function.id;
@@ -59,26 +57,32 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
       };
       break;
   }
-#ifdef PARANOID_AST_TYPE_CHECK
-  if(func->type != at_function) {
-    error_expected(NULL, get_ast_type_name(at_function), get_ast_type_name(func->type));
+  switch(func->type) {
+    case at_function:
+      if(ast->data.call.callargs->data.callargs.count != func->data.function.params->data.params.count) {
+        error_paramcount(NULL, fn, func->data.function.params->data.params.count, ast->data.call.callargs->data.callargs.count);
+      }
+      /* prepare the parameters/arguments */
+      env_t* inner;
+      int i;
+      inner = create_env();
+      inner->parent = env;
+      for(i = 0; i < func->data.function.params->data.params.count; i++) {
+        set_ast_to_id(inner, func->data.function.params->data.params.params[i], ast->data.call.callargs->data.callargs.callargs[i]);
+      }
+      /* execute the function */
+      exec_statements(inner, func->data.function.statements);
+      /* get the result */
+      inner->parent = NULL; /* must be NULL, get_ast_by_id() also searches the parent environment */
+      result = get_ast_by_id(inner, "@");
+      free_env(inner);
+      break;
+    case at_builtin: // TODO : hier weitermachen ! ! !
+      break;
+    default:
+      error_expected(NULL, get_ast_type_name(at_function), get_ast_type_name(func->type));
+      break;
   }
-#endif /* PARANOID_AST_TYPE_CHECK */
-  if(ast->data.call.callargs->data.callargs.count != func->data.function.params->data.params.count) {
-    error_paramcount(NULL, fn, func->data.function.params->data.params.count, ast->data.call.callargs->data.callargs.count);
-  }
-  /* prepare the parameters/arguments */
-  inner = create_env();
-  inner->parent = env;
-  for(i = 0; i < func->data.function.params->data.params.count; i++) {
-    set_ast_to_id(inner, func->data.function.params->data.params.params[i], ast->data.call.callargs->data.callargs.callargs[i]);
-  }
-  /* execute the function */
-  exec_statements(inner, func->data.function.statements);
-  /* get the result */
-  inner->parent = NULL; /* must be NULL, get_ast_by_id() also searches the parent environment */
-  result = get_ast_by_id(inner, "@");
-  free_env(inner);
   return result;
 }
 

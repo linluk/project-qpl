@@ -46,11 +46,11 @@ map_t* create_map(size_t size);
 /* return NULL  -> added new value.
  * return !NULL -> updated value old value returned
  */
-void* add_value(map_t* map, char* key, void* value);
+void* add_value(map_t* map, const char* key, void* value);
 
-void* delete_value(map_t* map, char* key);
+void* delete_value(map_t* map, const char* key);
 
-void* get_value(map_t* map, char* key);
+void* get_value(map_t* map, const char* key);
 
 /* returns the first element (not the first one added!)
  * returns NULL if map is empty.

@@ -38,6 +38,7 @@ typedef enum ast_type_e {
   at_if, at_elif,
   at_while, at_dowhile,
   at_function, at_params,
+  at_builtin,
 
   /* add values before this */
   at_end
@@ -89,8 +90,8 @@ typedef struct ast_s {
     struct { /* call */
       call_type_t call_type;
       union { /* call.function */
-        char* id;
-        struct ast_s* function;
+        char* id;                /* use this when call_type is ct_named */
+        struct ast_s* function;  /* use this when call_type is ct_anonymous */
       } function;
       struct ast_s* callargs;
     } call;
@@ -127,6 +128,14 @@ typedef struct ast_s {
       int count;
       char** params;
     } params;
+    struct { /* builtin */
+      int paramcount;
+      union { /* builtin.function */
+        struct ast_s* (*builtin_0)();
+        struct ast_s* (*builtin_1)(struct ast_s*);
+        struct ast_s* (*builtin_2)(struct ast_s*, struct ast_s*);
+      } function;
+    } builtin;
   } data;
 } ast_t;
 
@@ -147,7 +156,9 @@ ast_t* create_while(ast_t* condition, ast_t* statements);
 ast_t* create_dowhile(ast_t* condition, ast_t* statements);
 ast_t* create_function(ast_t* params, ast_t* statements);
 ast_t* create_param(ast_t* params, char* id);
-
+ast_t* create_builtin_0(ast_t*(*builtin_0)());
+ast_t* create_builtin_1(ast_t*(*builtin_1)(ast_t*));
+ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*));
 const char* get_ast_type_name(ast_type_t ast);
 const char* get_op_str(operator_t op);
 
