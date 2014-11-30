@@ -39,9 +39,9 @@ env_t* create_env(void);
 
 void free_env(env_t* env);
 
-ast_t* get_ast_by_id(env_t* env, char* id);
+ast_t* get_ast_by_id(env_t* env, const char* id);
 
-void set_ast_to_id(env_t* env, char* id, ast_t* ast);
-
+void set_ast_to_id(env_t* env, const char* id, ast_t* ast);
 
 #endif /* __ENV_H__ */
+

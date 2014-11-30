@@ -42,7 +42,7 @@
 #define MIN_MAP_SIZE (15)
 
 /* prototypes */
-size_t get_hash(char* key);
+size_t get_hash(const char* key);
 
 void error_exit(char* emsg);
 
@@ -51,7 +51,7 @@ int is_empty_item(key_value_t item);
 void rehash(map_t* map, size_t new_size);  /* TODO: rename to repopulate */
 
 /* prototypes in "map.c" */
-size_t get_hash(char* key) {
+size_t get_hash(const char* key) {
   /* implements fnv-1 hashing function */
   size_t hash;
   size_t len;
@@ -134,7 +134,7 @@ map_t* create_map(size_t size) {
   return map;
 }
 
-void* add_value(map_t* map, char* key, void* value) {
+void* add_value(map_t* map, const char* key, void* value) {
   // should work
   size_t idx;
   size_t hash;
@@ -174,7 +174,7 @@ void* add_value(map_t* map, char* key, void* value) {
   }
 }
 
-void* delete_value(map_t* map, char* key) {
+void* delete_value(map_t* map, const char* key) {
   // should work
   size_t idx;
   size_t start;
@@ -209,7 +209,7 @@ void* delete_value(map_t* map, char* key) {
   }
 }
 
-void* get_value(map_t* map, char* key) {
+void* get_value(map_t* map, const char* key) {
   // should work
   size_t idx;
   size_t start;
