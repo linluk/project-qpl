@@ -38,8 +38,6 @@
 /* self */
 #include "vm.h"
 
-#define PARANOID_TYPE_CHECK
-
 ast_t* eval_call(env_t* env, ast_t* ast) {
   ast_t* func;
   ast_t* result;
@@ -68,7 +66,7 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
       inner = create_env();
       inner->parent = env;
       for(i = 0; i < func->data.function.params->data.params.count; i++) {
-        set_ast_to_id(inner, func->data.function.params->data.params.params[i], ast->data.call.callargs->data.callargs.callargs[i]);
+        set_ast_to_id(inner, func->data.function.params->data.params.params[i], eval_expression(env,ast->data.call.callargs->data.callargs.callargs[i]));
       }
       /* execute the function */
       exec_statements(inner, func->data.function.statements);
@@ -86,10 +84,10 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
           result = func->data.builtin.function.builtin_0();
           break;
         case 1:
-          result = func->data.builtin.function.builtin_1(ast->data.call.callargs->data.callargs.callargs[0]);
+          result = func->data.builtin.function.builtin_1(eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]));
           break;
         case 2:
-          result = func->data.builtin.function.builtin_2(ast->data.call.callargs->data.callargs.callargs[0],ast->data.call.callargs->data.callargs.callargs[1]);
+          result = func->data.builtin.function.builtin_2(eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]),eval_expression(env,ast->data.call.callargs->data.callargs.callargs[1]));
           break;
         default:
           /* this should never happen */
@@ -126,14 +124,15 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_conditional:
     case at_dowhile:
     case at_elif:
-    case at_end:
     case at_function:
     case at_if:
     case at_params:
     case at_statements:
     case at_while:
+    case at_builtin:
       error_expected(NULL,"expression",get_ast_type_name(ast->type));
   }
+  return NULL; /* this should never happen */
 }
 
 void exec_statements(env_t* env, ast_t* ast) {
@@ -185,11 +184,10 @@ void exec_assignment(env_t* env, ast_t* ast) {
       right = eval_expression(env, ast->data.assignment.right);
       break;
     case at_call:
-      // TODO: implementieren.
+      right = eval_call(env, ast->data.assignment.right);
       break;
     default:
       break;
-
   }
   if(right == NULL) {
     error_assign(NULL,"NULL",ast->data.assignment.id);

@@ -30,15 +30,17 @@
 #include "ast.h"
 #include "vm.h"
 #include "env.h"
+#include "builtin.h"
+
 
 int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 #include "lexer.h"
 #include "parser.h"
 
-ast_t* builtin_print_test(ast_t* ast) {
- printf("print function called!\n");
- return NULL;
-}
+//ast_t* builtin_print_test(ast_t* ast) {
+// printf("print function called!\n");
+// return NULL;
+//}
 
 int main(int argc, char** argv) {
 
@@ -70,7 +72,9 @@ int main(int argc, char** argv) {
 
     env_t* env;
     env = create_env();
-    set_ast_to_id(env,"print",create_builtin_1(&builtin_print_test));
+    populate_env(env);
+
+    //set_ast_to_id(env,"print",create_builtin_1(&builtin_print_test));
 
     vm_exec(env, ast);
 
