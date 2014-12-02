@@ -41,7 +41,6 @@ typedef enum ast_type_e {
   at_builtin,
 
   /* add values before this */
-  at_end
 } ast_type_t;
 
 typedef enum call_type_e {

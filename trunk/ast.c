@@ -54,7 +54,7 @@ static const char* at_while_str = "while";
 static const char* at_dowhile_str = "do-while";
 static const char* at_function_str = "function";
 static const char* at_params_str = "params";
-static const char* at_end_str = "end";
+static const char* at_builtin_str = "builtin";
 static const char* at_unknown_str = "unknown";
 
 /* operator strings, these are returned by get_op_str() */
@@ -302,7 +302,6 @@ const char* get_ast_type_name(ast_type_t ast) {
     case at_double: return at_double_str;
     case at_dowhile: return at_dowhile_str;
     case at_elif: return at_elif_str;
-    case at_end: return at_end_str;
     case at_expression: return at_expression_str;
     case at_function: return at_function_str;
     case at_if: return at_if_str;
@@ -311,6 +310,7 @@ const char* get_ast_type_name(ast_type_t ast) {
     case at_statements: return at_statements_str;
     case at_string: return at_string_str;
     case at_while: return at_while_str;
+    case at_builtin: return at_builtin_str;
     default: return at_unknown_str;
   }
 }
@@ -423,6 +423,9 @@ void print_ast(ast_t* ast, int indent){
         print_ast(ast->data.function.params,indent+2);
         print_ast(ast->data.function.statements,indent+2);
         break;
+      case at_builtin:
+        printf("%s:\n",tn);
+        break;
       case at_params:
         printf("%s: %d ( ",tn,ast->data.params.count);
         for(i = 0; i < ast->data.params.count; i++) {
@@ -514,6 +517,8 @@ void free_ast(ast_t* ast) {
       case at_function:
         free_ast(ast->data.function.params);
         free_ast(ast->data.function.statements);
+        break;
+      case at_builtin:
         break;
       case at_params:
         for(i = 0; i < ast->data.params.count; i++) {
