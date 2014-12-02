@@ -262,6 +262,31 @@ ast_t* create_param(ast_t* params, char* param) {
   return params;
 }
 
+ast_t* create_builtin_0(ast_t*(*builtin_0)()) {
+  ast_t* ast;
+  ast = create_ast(at_builtin);
+  ast->data.builtin.paramcount = 0;
+  ast->data.builtin.function.builtin_0 = builtin_0;
+  return ast;
+}
+
+ast_t* create_builtin_1(ast_t*(*builtin_1)(ast_t*)) {
+  ast_t* ast;
+  ast = create_ast(at_builtin);
+  ast->data.builtin.paramcount = 1;
+  ast->data.builtin.function.builtin_1 = builtin_1;
+  return ast;
+}
+
+ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*)) {
+  ast_t* ast;
+  ast = create_ast(at_builtin);
+  ast->data.builtin.paramcount = 2;
+  ast->data.builtin.function.builtin_2 = builtin_2;
+  return ast;
+}
+
+
 int is_numeric_ast_type(ast_type_t ast) {
   return (ast == at_double) || (ast == at_integer);
 }

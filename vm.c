@@ -77,7 +77,24 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
       result = get_ast_by_id(inner, "@");
       free_env(inner);
       break;
-    case at_builtin: // TODO : hier weitermachen ! ! !
+    case at_builtin:
+      if(ast->data.call.callargs->data.callargs.count != func->data.builtin.paramcount) {
+        error_paramcount(NULL, fn, func->data.function.params->data.params.count, ast->data.call.callargs->data.callargs.count);
+      }
+      switch(func->data.builtin.paramcount) {
+        case 0:
+          result = func->data.builtin.function.builtin_0();
+          break;
+        case 1:
+          result = func->data.builtin.function.builtin_1(ast->data.call.callargs->data.callargs.callargs[0]);
+          break;
+        case 2:
+          result = func->data.builtin.function.builtin_2(ast->data.call.callargs->data.callargs.callargs[0],ast->data.call.callargs->data.callargs.callargs[1]);
+          break;
+        default:
+          /* this should never happen */
+          break;
+      }
       break;
     default:
       error_expected(NULL, get_ast_type_name(at_function), get_ast_type_name(func->type));
