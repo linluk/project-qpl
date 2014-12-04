@@ -427,7 +427,7 @@ void print_ast(ast_t* ast, int indent){
         printf("%s:\n",tn);
         break;
       case at_params:
-        printf("%s: %d ( ",tn,ast->data.params.count);
+        printf("%s: %d (",tn,ast->data.params.count);
         for(i = 0; i < ast->data.params.count; i++) {
           if(i != 0) {
             printf(", ");

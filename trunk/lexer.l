@@ -98,6 +98,7 @@ void lex_double(char* value) {
 }
 
 void lex_string(char* value) {
+  // FIXME : this function should return the string without quotes!!
   yylval.s = strdup(yytext);
 }
 
@@ -145,6 +146,8 @@ void lex_operator(char* value) {
       exit(1);
     }
   }
+#undef OP
+#undef OPB
 }
 
 void lex_id(char* value) {

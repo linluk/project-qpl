@@ -24,22 +24,18 @@
  *
  ****************************************************************************/
 
-#ifndef __OPS_H__
-#define __OPS_H__
+#ifndef __BUILTIN_H__
+#define __BUILTIN_H__
 
-#include "env.h"
 #include "ast.h"
+#include "env.h"
 
-/* math ops */
-ast_t* eval_add(env_t* env, ast_t* ast1, ast_t* ast2);
-ast_t* eval_sub(env_t* env, ast_t* ast1, ast_t* ast2);
-ast_t* eval_mul(env_t* env, ast_t* ast1, ast_t* ast2);
-ast_t* eval_div(env_t* env, ast_t* ast1, ast_t* ast2);
+void populate_env(env_t* env);
 
-/* logical ops */
-ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2);
+/* stdin stdout */
+ast_t* builtin_print(ast_t* ast);
+ast_t* builtin_println(ast_t* ast);
 
+ast_t* builtin_to_string(ast_t* ast);
 
-
-
-#endif /* __OPS_H__ */
+#endif /* __BUILTIN_H__ */
