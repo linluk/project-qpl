@@ -110,8 +110,12 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_double: return ast;
     case at_expression: 
       switch(ast->data.expression.op) {
-        case op_add: return eval_add(env, ast->data.expression.left, ast->data.expression.right);
-        case op_and: return eval_and(env, ast->data.expression.left, ast->data.expression.right);
+        case op_add: return eval_add(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        case op_mul: return eval_mul(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        case op_div: return eval_div(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        case op_sub: return eval_sub(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        
+        case op_and: return eval_and(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
         default: // TODO other operator evals << default only because of warnings.
           break;
       }
