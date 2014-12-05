@@ -116,6 +116,9 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
         case op_sub: return eval_sub(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
         
         case op_and: return eval_and(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+
+        case op_cat: return eval_cat(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+
         default: // TODO other operator evals << default only because of warnings.
           break;
       }

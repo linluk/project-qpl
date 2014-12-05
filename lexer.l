@@ -36,6 +36,7 @@
 /* own */
 #include "ast.h"
 #include "parser.h"
+#include "utils.h"
 
 void lex_integer(char* value);
 void lex_double(char* value);
@@ -98,8 +99,7 @@ void lex_double(char* value) {
 }
 
 void lex_string(char* value) {
-  // FIXME : this function should return the string without quotes!!
-  yylval.s = strdup(yytext);
+  yylval.s = replace_str(yytext,"\"",""); // trim the delimiting quotes
 }
 
 void lex_bool(char* value) {

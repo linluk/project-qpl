@@ -26,6 +26,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+
 
 #include "utils.h"
 
@@ -58,3 +61,50 @@ void free_null(void** p) {
     *p = NULL;
   }
 }
+
+char* replace_str(const char* str, const char* old, const char* new) {
+  size_t olen;
+  size_t nlen;
+  size_t slen;
+  size_t rlen;
+  char* tmp;
+  char* result;
+  ptrdiff_t doffset;
+  ptrdiff_t soffset;
+  ptrdiff_t clen;
+  int cnt;
+  olen = strlen(old);
+  nlen = strlen(new);
+  slen = strlen(str);
+  cnt = 0;
+  tmp = strstr(str,old);
+  while(tmp != NULL) {
+    cnt++;
+    tmp = strstr((tmp+olen),old);
+  }
+  if(cnt == 0) {
+    result = strdup(str);
+  } else {
+    rlen = slen + cnt * (nlen - olen);
+    result = (char*)check_malloc(1 + rlen  * sizeof(char));
+    doffset = 0;
+    soffset = 0;
+    clen = 0;
+    tmp = strstr(str, old);
+    while(tmp != NULL) {
+      clen = tmp - (str + soffset);
+      strncpy(result + doffset, str + soffset, clen);
+      doffset += clen;
+      soffset += clen + olen;
+      strncpy(result + doffset, new, nlen);
+      doffset += nlen;
+      tmp = strstr(str + soffset, old);
+    }
+    strncpy(result + doffset, str + soffset, rlen - doffset);
+    result[rlen] = '\0';
+  }
+  return result;
+}
+
+
+

@@ -38,7 +38,7 @@
 void populate_env(env_t* env) {
   set_ast_to_id(env,"print",create_builtin_1(&builtin_print));
   set_ast_to_id(env,"println",create_builtin_1(&builtin_println));
-  set_ast_to_id(env,"to_string",create_builtin_1(&builtin_to_string));
+  set_ast_to_id(env,"str",create_builtin_1(&builtin_to_string));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -61,7 +61,7 @@ ast_t* builtin_to_string(ast_t* ast) {
   char buf[50];
   str = NULL;
   switch(ast->type) {
-    case at_bool: sprintf(buf,"%s",ast->data.b == 0 ? "false\0" : "true\0"); break;
+    case at_bool: sprintf(buf,"%s",ast->data.b == 0 ? "false" : "true"); break;
     case at_double: sprintf(buf,"%f",ast->data.d); break;
     case at_integer: sprintf(buf,"%d",ast->data.i); break;
     case at_string: str = create_string(strdup(ast->data.s)); break;
