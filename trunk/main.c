@@ -31,7 +31,7 @@
 #include "vm.h"
 #include "env.h"
 #include "builtin.h"
-
+#include "utils.h"
 
 int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 #include "lexer.h"
@@ -43,6 +43,28 @@ int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 //}
 
 int main(int argc, char** argv) {
+
+  /*char* tst;
+  tst = replace_str("hallo ich bin ein test","ich","du");
+  printf("%s\n",tst);
+  free(tst);
+  tst = replace_str("hallo ich bin ein test","ichix","du");
+  printf("%s\n",tst);
+  free(tst);
+  tst = replace_str("hallo ich bin ich ein ich test","ich","du");
+  printf("%s\n",tst);
+  free(tst);
+  tst = replace_str("hallo ichich bin ein test","ich","du");
+  printf("%s\n",tst);
+  free(tst);
+  tst = replace_str("hallo ich bin ein test","ich","");
+  printf("%s\n",tst);
+  free(tst);
+  tst = replace_str("","ich","du");
+  printf("%s\n",tst);
+  free(tst);
+
+  return 0;*/
 
   ast_t* ast;
   ast = NULL;

@@ -36,4 +36,6 @@ void* check_realloc(void* ptr, size_t size);
 /* sets the pointer to NULL and frees the allocated value */
 void free_null(void** p);
 
+char* replace_str(const char* str, const char* old, const char* new);
+
 #endif /* __UTILS_H__ */

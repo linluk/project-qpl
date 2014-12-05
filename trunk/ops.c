@@ -26,12 +26,14 @@
 
 /* lib */
 #include <stdio.h>
+#include <string.h>
 
 /* own */
 #include "ast.h"
 #include "vm.h"
 #include "env.h"
 #include "error.h"
+#include "utils.h"
 
 /* self */
 #include "ops.h"
@@ -96,10 +98,12 @@ double __mul_func(double d1, double d2) {
 }
 
 double __div_func(double d1, double d2) {
+  // TODO : div by zero
   return d1 / d2;
 }
 
 /* prototypes in "ops.h" */
+/* math ops */
 ast_t* eval_add(env_t* env, ast_t* ast1, ast_t* ast2) {
   return eval_math(env,op_add,ast1,ast2,&__add_func);
 }
@@ -116,6 +120,7 @@ ast_t* eval_div(env_t* env, ast_t* ast1, ast_t* ast2) {
   return eval_math(env,op_div,ast1,ast2,&__div_func);
 }
 
+/* logical ops */
 ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
   ast_t* result;
   if(ast1->type == at_bool && ast2->type == at_bool) {
@@ -129,4 +134,20 @@ ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
   return result;
 }
 
+/* string ops */
+ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2) {
+  ast_t* result;
+  if(ast1->type == at_string && ast2->type == at_string) {
+    result = create_string("");
+    result->data.s = (char*)check_malloc((strlen(ast1->data.s) + strlen(ast2->data.s) + 1) * sizeof(char));
+    strcpy(result->data.s, ast1->data.s);
+    strcat(result->data.s, ast2->data.s);
+  } else {
+    error_apply(NULL,get_op_str(op_cat), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+  }
+  result->ref_count++;
+  if(ast1->ref_count == 0) { free_ast(ast1); }
+  if(ast2->ref_count == 0) { free_ast(ast2); }
+  return result;
+}
 

@@ -39,7 +39,8 @@ ast_t* eval_div(env_t* env, ast_t* ast1, ast_t* ast2);
 /* logical ops */
 ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2);
 
-
+/* string ops */
+ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2);
 
 
 #endif /* __OPS_H__ */
