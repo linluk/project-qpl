@@ -169,6 +169,11 @@ ast_t* create_call(char* id, ast_t* function, ast_t* callargs) {
       exit(1);
     }
   }
+  if(callargs == NULL) {
+    callargs = create_ast(at_callargs);
+    callargs->data.callargs.count = 0;
+    callargs->data.callargs.callargs = NULL;
+  };
   ast->data.call.callargs = callargs;
   return ast;
 }
@@ -241,6 +246,11 @@ ast_t* create_dowhile(ast_t* condition, ast_t* statements) {
 ast_t* create_function(ast_t* params, ast_t* statements) {
   ast_t* ast;
   ast = create_ast(at_function);
+  if(params == NULL) {
+    params = create_ast(at_params);
+    params->data.params.count = 0;
+    params->data.params.params = NULL;
+  }
   ast->data.function.params = params;
   ast->data.function.statements = statements;
   return ast;
@@ -286,6 +296,14 @@ ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*)) {
   return ast;
 }
 
+void dec_ref(ast_t* ast) {
+  if(ast->ref_count > 0) {
+    ast->ref_count--;
+  }
+  if(ast->ref_count == 0) {
+    free_ast(ast);
+  }
+}
 
 int is_numeric_ast_type(ast_type_t ast) {
   return (ast == at_double) || (ast == at_integer);

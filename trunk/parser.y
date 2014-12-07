@@ -126,7 +126,7 @@ conditional : if_statement elif_statements else_statement { $$ = create_conditio
 if_statement : T_IF T_LPAREN expression T_RPAREN block { $$ = create_if($3, $5); }
              ;
 
-elif_statement : T_ELIF T_LPAREN expression T_RPAREN block { $$ = create_if($3, $5);/* create_if() here an combine them to elif_statement_S_ */ }
+elif_statement : T_ELIF T_LPAREN expression T_RPAREN block { $$ = create_if($3, $5);/* create_if() here and combine them to elif_statement_S_ */ }
                ;
 
 elif_statements : { $$ = NULL; }

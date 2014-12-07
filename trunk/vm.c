@@ -108,20 +108,32 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_call: return eval_call(env,ast);
     case at_identifier: return get_ast_by_id(env, ast->data.id);
     case at_double: return ast;
-    case at_expression: 
+    case at_expression: {
+      ast_t* result;
+      ast_t* left;
+      ast_t* right;
+      left = eval_expression(env, ast->data.expression.left);
+      right = eval_expression(env, ast->data.expression.right);
       switch(ast->data.expression.op) {
-        case op_add: return eval_add(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
-        case op_mul: return eval_mul(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
-        case op_div: return eval_div(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
-        case op_sub: return eval_sub(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        case op_add: result = eval_add(env, left, right); break;
+        case op_mul: result = eval_mul(env, left, right); break;
+        case op_div: result = eval_div(env, left, right); break;
+        case op_sub: result = eval_sub(env, left, right); break;
         
-        case op_and: return eval_and(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        case op_and: result = eval_and(env, left, right); break;
 
-        case op_cat: return eval_cat(env, eval_expression(env, ast->data.expression.left), eval_expression(env, ast->data.expression.right));
+        case op_gt: result = eval_gt(env, left, right); break;
+
+        case op_cat: result = eval_cat(env, left, right); break;
 
         default: // TODO other operator evals << default only because of warnings.
           break;
       }
+      result->ref_count = 0;
+      if(left->ref_count == 0) { free_ast(left); }
+      if(right->ref_count == 0) { free_ast(right); }
+      return result;
+    }
     case at_integer: return ast;
     case at_string: return ast;
 
@@ -142,6 +154,45 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
   return NULL; /* this should never happen */
 }
 
+int exec_if(env_t* env, ast_t* ast) {
+  ast_t* cond;
+  int result; /* not null when condition was true,
+                 null when condition was false */
+  result = 0;
+  cond = eval_expression(env, ast->data.if_statement.condition);
+  if(cond->type != at_bool) {
+    error_expected(NULL,get_ast_type_name(at_bool),get_ast_type_name(cond->type));
+  } else {
+    if(cond->data.b) {
+      exec_statements(env, ast->data.if_statement.statements);
+      result = 1;
+    }
+    dec_ref(cond);
+  }
+  return result;
+}
+
+void exec_conditional(env_t* env, ast_t* ast) {
+  /* if */
+  if(exec_if(env, ast->data.conditional.if_statement)) {
+    return;
+  } else {
+    if(ast->data.conditional.elif_statements != NULL) {
+      size_t i;
+      /* elif */
+      for(i = 0; i < ast->data.conditional.elif_statements->data.elif_statements.count; i++) {
+        if(exec_if(env, ast->data.conditional.elif_statements->data.elif_statements.elif_statements[i])) {
+          return;
+        }
+      }
+    }
+    if(ast->data.conditional.else_statement != NULL) {
+      /* else */
+      exec_statements(env, ast->data.conditional.else_statement);
+    }
+  }
+}
+
 void exec_statements(env_t* env, ast_t* ast) {
   size_t i;
   ast_t* tmp;
@@ -159,6 +210,7 @@ void exec_statements(env_t* env, ast_t* ast) {
         }
         break;
       case at_conditional:
+        exec_conditional(env, ast->data.statements.statements[i]);
         break;
       case at_while:
         break;

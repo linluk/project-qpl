@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
 
   if(ast != NULL) {
     
-    printf("ast != NULL\n");
+//    printf("ast != NULL\n");
 
     env_t* env;
     env = create_env();
