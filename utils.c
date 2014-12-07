@@ -76,17 +76,20 @@ char* replace_str(const char* str, const char* old, const char* new) {
   olen = strlen(old);
   nlen = strlen(new);
   slen = strlen(str);
+  /* get count of replace patterns */
   cnt = 0;
   tmp = strstr(str,old);
   while(tmp != NULL) {
     cnt++;
     tmp = strstr((tmp+olen),old);
   }
+  /* check if there is nothing to replace */
   if(cnt == 0) {
-    result = strdup(str);
+    result = strdup(str); /* copy the original string to result */
   } else {
+    /* create a buffer for the "new" string */
     rlen = slen + cnt * (nlen - olen);
-    result = (char*)check_malloc(1 + rlen  * sizeof(char));
+    result = (char*)check_malloc((1 + rlen)  * sizeof(char));
     doffset = 0;
     soffset = 0;
     clen = 0;

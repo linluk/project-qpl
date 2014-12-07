@@ -45,6 +45,9 @@ double __sub_func(double d1, double d2);
 double __mul_func(double d1, double d2);
 double __div_func(double d1, double d2);
 
+ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(double,double));
+char __gt_func(double d1, double d2);
+
 /* prototypes in "ops.c" */
 ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (math_func)(double,double)) {
   ast_t* result;
@@ -79,10 +82,7 @@ ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (mat
       error_apply(NULL,get_op_str(op), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
       break;
   }
-  result->ref_count++;
-  if(ast1->ref_count == 0) { free_ast(ast1); }
-  if(ast2->ref_count == 0) { free_ast(ast2); }
-  return result;  
+  return result;
 }
 
 double __add_func(double d1, double d2) {
@@ -100,6 +100,46 @@ double __mul_func(double d1, double d2) {
 double __div_func(double d1, double d2) {
   // TODO : div by zero
   return d1 / d2;
+}
+
+ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(double,double)) {
+  ast_t* result;
+  switch(ast1->type) {
+    case at_integer:
+      switch(ast2->type) {
+        case at_integer:
+          result = create_bool((int)comp_func((double)ast1->data.i, (double)ast2->data.i));
+          break;
+        case at_double:
+          result = create_bool(comp_func((double)ast1->data.i, ast2->data.d));
+          break;
+        default:
+          error_apply(NULL,get_op_str(op), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+          break;
+      }
+      break;
+    case at_double:
+      switch(ast2->type) {
+        case at_integer:
+          result = create_bool(comp_func(ast1->data.d, (double)ast2->data.i));
+          break;
+        case at_double:
+          result = create_bool(comp_func(ast1->data.d, ast2->data.d));
+          break;
+        default:
+          error_apply(NULL,get_op_str(op), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+          break;
+      }
+      break;
+    default:
+      error_apply(NULL,get_op_str(op), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+      break;
+  }
+  return result;
+}
+
+char __gt_func(double d1, double d2) {
+  return d1 > d2 ? 1 : 0;
 }
 
 /* prototypes in "ops.h" */
@@ -128,26 +168,25 @@ ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
   } else {
     error_apply(NULL,get_op_str(op_and), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
   }
-  result->ref_count++;
-  if(ast1->ref_count == 0) { free_ast(ast1); }
-  if(ast2->ref_count == 0) { free_ast(ast2); }
   return result;
+}
+
+/* compare ops */
+ast_t* eval_gt(env_t* env, ast_t* ast1, ast_t* ast2) {
+  return eval_gtlt(env, op_gt, ast1, ast2, &__gt_func);
 }
 
 /* string ops */
 ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2) {
   ast_t* result;
   if(ast1->type == at_string && ast2->type == at_string) {
-    result = create_string("");
+    result = create_string(NULL);
     result->data.s = (char*)check_malloc((strlen(ast1->data.s) + strlen(ast2->data.s) + 1) * sizeof(char));
     strcpy(result->data.s, ast1->data.s);
     strcat(result->data.s, ast2->data.s);
   } else {
     error_apply(NULL,get_op_str(op_cat), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
   }
-  result->ref_count++;
-  if(ast1->ref_count == 0) { free_ast(ast1); }
-  if(ast2->ref_count == 0) { free_ast(ast2); }
   return result;
 }
 
