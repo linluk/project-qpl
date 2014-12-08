@@ -160,6 +160,7 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_bool:
     case at_double:
     case at_string:
+    case at_function:
       return ast;
 
     /* invalid */
@@ -168,7 +169,6 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_conditional:
     case at_dowhile:
     case at_elif:
-    case at_function:
     case at_if:
     case at_params:
     case at_statements:
