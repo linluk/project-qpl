@@ -38,6 +38,9 @@ ast_t* builtin_println(ast_t* ast);
 ast_t* builtin_read(void);
 ast_t* builtin_readln(void);
 
-  ast_t* builtin_to_string(ast_t* ast);
+ast_t* builtin_to_string(ast_t* ast);
+ast_t* builtin_to_integer(ast_t* ast);
+ast_t* builtin_to_double(ast_t* ast);
+ast_t* builtin_to_bool(ast_t* ast);
 
 #endif /* __BUILTIN_H__ */

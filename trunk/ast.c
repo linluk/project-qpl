@@ -87,14 +87,14 @@ ast_t* create_ast(ast_type_t type) {
 }
 
 /* prototypes in "astgen.h" */
-ast_t* create_integer(int value) {
+ast_t* create_integer(intmax_t value) {
   ast_t* ast;
   ast = create_ast(at_integer);
   ast->data.i = value;
-  return ast;  
+  return ast;
 }
 
-ast_t* create_double(double value) {
+ast_t* create_double(long double value) {
   ast_t* ast;
   ast = create_ast(at_double);
   ast->data.d = value;
@@ -311,7 +311,7 @@ void dec_ref(ast_t* ast) {
   }
 }
 
-int is_numeric_ast_type(ast_type_t ast) {
+char is_numeric_ast_type(ast_type_t ast) {
   return (ast == at_double) || (ast == at_integer);
 }
 
@@ -371,10 +371,10 @@ void print_ast(ast_t* ast, int indent){
         printf("%s: %s\n",tn,ast->data.id);
         break;
       case at_integer:
-        printf("%s: %d\n",tn,ast->data.i);
+        printf("%s: %jd\n",tn,ast->data.i);
         break;
       case at_double:
-        printf("%s: %f\n",tn,ast->data.d);
+        printf("%s: %Lf\n",tn,ast->data.d);
         break;
       case at_string:
         printf("%s: \"%s\"\n",tn,ast->data.s);
@@ -404,7 +404,7 @@ void print_ast(ast_t* ast, int indent){
         print_ast(ast->data.call.callargs,indent+2);
         break;
       case at_callargs:
-        printf("%s: %d\n",tn, ast->data.callargs.count);
+        printf("%s: %zu\n",tn, ast->data.callargs.count);
         for(i = 0; i < ast->data.callargs.count; i++) {
           print_ast(ast->data.callargs.callargs[i],indent+2);
         }
@@ -427,7 +427,7 @@ void print_ast(ast_t* ast, int indent){
         print_ast(ast->data.if_statement.statements,indent+2);
         break;
       case at_elif:
-        printf("%s: %d\n",tn,ast->data.elif_statements.count);
+        printf("%s: %zu\n",tn,ast->data.elif_statements.count);
         for(i = 0; i < ast->data.elif_statements.count; i++) {
           print_ast(ast->data.elif_statements.elif_statements[i],indent+2);
         }
@@ -451,7 +451,7 @@ void print_ast(ast_t* ast, int indent){
         printf("%s:\n",tn);
         break;
       case at_params:
-        printf("%s: %d (",tn,ast->data.params.count);
+        printf("%s: %zu (",tn,ast->data.params.count);
         for(i = 0; i < ast->data.params.count; i++) {
           if(i != 0) {
             printf(", ");

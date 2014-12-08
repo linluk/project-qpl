@@ -62,6 +62,44 @@ void free_null(void** p) {
   }
 }
 
+char is_str_int(const char* str) {
+  if((str[0] == '-' || str[0] == '+') || (str[0] >= '0' && str[0] <= '9')) {
+    size_t i;
+    i = 1;
+    while(str[i]) {
+      if(str[i] < '0' || str[i] > '9') {
+        return 0;
+      }
+      i++;
+    }
+  } else {
+    return 0;
+  }
+  return 1;
+}
+
+char is_str_dbl(const char* str) {
+  if((str[0] == '-' || str[0] == '+') || (str[0] >= '0' && str[0] <= '9')) {
+    size_t i;
+    char p;
+    i = 1;
+    p = 0;
+    while(str[i]) {
+      if(str[i] < '0' || str[i] > '9') {
+        if(p == 0 && str[i] == '.') {
+          p = 1;
+        } else {
+          return 0;
+        }
+      }
+      i++;
+    }
+  } else {
+    return 0;
+  }
+  return 1;  
+}
+
 char* replace_str(const char* str, const char* old, const char* new) {
   size_t olen;
   size_t nlen;

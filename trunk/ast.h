@@ -27,6 +27,8 @@
 #ifndef __AST_H__
 #define __AST_H__
 
+#include <stdint.h>
+
 typedef enum ast_type_e {
   at_identifier,
   at_integer, at_double, at_string, at_bool,
@@ -68,8 +70,8 @@ typedef struct ast_s {
   int ref_count; /* positive value: ref_count -> call free when it becomes zero 
                     negative value: created by parser -> never call free */
   union { /* data */
-    int i;
-    double d;
+    intmax_t i;
+    long double d;
     char b;
     char* s;
     char* id;
@@ -83,7 +85,7 @@ typedef struct ast_s {
       struct ast_s* right;
     } assignment;
     struct { /* statements */
-      int count;
+      size_t count;
       struct ast_s** statements;
     } statements;
     struct { /* call */
@@ -95,7 +97,7 @@ typedef struct ast_s {
       struct ast_s* callargs;
     } call;
     struct { /* callargs */
-      int count;
+      size_t count;
       struct ast_s** callargs;
     } callargs;
     struct { /* conditional */
@@ -108,7 +110,7 @@ typedef struct ast_s {
       struct ast_s* statements;
     } if_statement;
     struct { /* elif_statements */
-      int count;
+      size_t count;
       struct ast_s** elif_statements;
     } elif_statements;
     struct { /* while_statement */
@@ -124,11 +126,11 @@ typedef struct ast_s {
       struct ast_s* statements;
     } function;
     struct { /* params */
-      int count;
+      size_t count;
       char** params;
     } params;
     struct { /* builtin */
-      int paramcount;
+      size_t paramcount;
       union { /* builtin.function */
         struct ast_s* (*builtin_0)();
         struct ast_s* (*builtin_1)(struct ast_s*);
@@ -138,8 +140,8 @@ typedef struct ast_s {
   } data;
 } ast_t;
 
-ast_t* create_integer(int value);
-ast_t* create_double(double value);
+ast_t* create_integer(intmax_t value);
+ast_t* create_double(long double value);
 ast_t* create_bool(char value);
 ast_t* create_string(char* value);
 ast_t* create_identifier(char* id);
@@ -164,7 +166,7 @@ const char* get_op_str(operator_t op);
 void inc_ref(ast_t* ast);
 void dec_ref(ast_t* ast);
 
-int is_numeric_ast_type(ast_type_t ast);
+char is_numeric_ast_type(ast_type_t ast);
 
 void print_ast(ast_t* ast, int indent);
 
