@@ -47,10 +47,15 @@ double __div_func(double d1, double d2);
 
 ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(double,double));
 char __gt_func(double d1, double d2);
+char __lt_func(double d1, double d2);
+char __ge_func(double d1, double d2);
+char __le_func(double d1, double d2);
+ast_t* eval_eqneq(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2);
 
 /* prototypes in "ops.c" */
 ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (math_func)(double,double)) {
   ast_t* result;
+  result = NULL;
   switch(ast1->type) {
     case at_integer:
       switch(ast2->type) {
@@ -104,6 +109,7 @@ double __div_func(double d1, double d2) {
 
 ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(double,double)) {
   ast_t* result;
+  result = NULL;
   switch(ast1->type) {
     case at_integer:
       switch(ast2->type) {
@@ -142,6 +148,39 @@ char __gt_func(double d1, double d2) {
   return d1 > d2 ? 1 : 0;
 }
 
+char __lt_func(double d1, double d2) {
+  return d1 < d2 ? 1 : 0;
+}
+
+char __ge_func(double d1, double d2) {
+  return d1 >= d2 ? 1 : 0;
+}
+
+char __le_func(double d1, double d2) {
+  return d1 <= d2 ? 1 : 0;
+}
+
+ast_t* eval_eqneq(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2) {
+  ast_t* result;
+  result = NULL;
+  if(ast1->type == ast2->type) {
+    switch(ast1->type) {
+      case at_bool: result = create_bool(ast1->data.b == ast2->data.b ? 1 : 0);
+      case at_double: result = create_bool( ast1->data.d == ast2->data.d ? 1 : 0);
+      case at_integer: result = create_bool( ast1->data.i == ast2->data.i ? 1 : 0);
+      case at_string: result = create_bool( strcmp(ast1->data.s, ast2->data.s) == 0 ? 1 : 0);
+      default: error_apply(NULL,get_op_str(op_eq), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+    }
+    if(op == op_neq) {
+      result->data.b = result->data.b == 0 ? 1 : 0;
+    }
+  } else {
+    error_apply(NULL,get_op_str(op_eq), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+  }
+  return result;
+}
+
+
 /* prototypes in "ops.h" */
 /* math ops */
 ast_t* eval_add(env_t* env, ast_t* ast1, ast_t* ast2) {
@@ -160,11 +199,34 @@ ast_t* eval_div(env_t* env, ast_t* ast1, ast_t* ast2) {
   return eval_math(env,op_div,ast1,ast2,&__div_func);
 }
 
+ast_t* eval_mod(env_t* env, ast_t* ast1, ast_t* ast2) {
+  ast_t* result;
+  result = NULL;
+  if(ast1->type == at_integer && ast2->type == at_integer) {
+    result = create_integer(ast1->data.i % ast2->data.i);
+  } else {
+    error_apply(NULL,get_op_str(op_mod), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+  }
+  return result;
+}
+
 /* logical ops */
 ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
   ast_t* result;
+  result = NULL;
   if(ast1->type == at_bool && ast2->type == at_bool) {
     result = create_bool(ast1->data.b && ast2->data.b);
+  } else {
+    error_apply(NULL,get_op_str(op_and), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+  }
+  return result;
+}
+
+ast_t* eval_or(env_t* env, ast_t* ast1, ast_t* ast2) {
+  ast_t* result;
+  result = NULL;
+  if(ast1->type == at_bool && ast2->type == at_bool) {
+    result = create_bool(ast1->data.b || ast2->data.b);
   } else {
     error_apply(NULL,get_op_str(op_and), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
   }
@@ -176,9 +238,30 @@ ast_t* eval_gt(env_t* env, ast_t* ast1, ast_t* ast2) {
   return eval_gtlt(env, op_gt, ast1, ast2, &__gt_func);
 }
 
+ast_t* eval_lt(env_t* env, ast_t* ast1, ast_t* ast2) {
+  return eval_gtlt(env, op_lt, ast1, ast2, &__lt_func);
+}
+
+ast_t* eval_ge(env_t* env, ast_t* ast1, ast_t* ast2) {
+  return eval_gtlt(env, op_ge, ast1, ast2, &__ge_func);
+}
+
+ast_t* eval_le(env_t* env, ast_t* ast1, ast_t* ast2) {
+  return eval_gtlt(env, op_ge, ast1, ast2, &__le_func);
+}
+
+ast_t* eval_eq(env_t* env, ast_t* ast1, ast_t* ast2) {
+  return eval_eqneq(env, op_eq, ast1, ast2);
+}
+
+ast_t* eval_neq(env_t* env, ast_t* ast1, ast_t* ast2) {
+  return eval_eqneq(env, op_neq, ast1, ast2);
+}
+
 /* string ops */
 ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2) {
   ast_t* result;
+  result = NULL;
   if(ast1->type == at_string && ast2->type == at_string) {
     result = create_string(NULL);
     result->data.s = (char*)check_malloc((strlen(ast1->data.s) + strlen(ast2->data.s) + 1) * sizeof(char));
@@ -189,4 +272,6 @@ ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2) {
   }
   return result;
 }
+
+
 

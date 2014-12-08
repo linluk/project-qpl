@@ -296,6 +296,12 @@ ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*)) {
   return ast;
 }
 
+void inc_ref(ast_t* ast) {
+  if(ast->ref_count >= 0) {
+    ast->ref_count++;
+  }
+}
+
 void dec_ref(ast_t* ast) {
   if(ast->ref_count > 0) {
     ast->ref_count--;

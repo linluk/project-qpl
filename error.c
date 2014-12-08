@@ -81,4 +81,11 @@ void error_unsupported(position_t* pos, const char* unsupported) {
   error(pos,buf);
 }
 
+void error_convert(position_t* pos, const char* from, const char* to) {
+  char buf[250];
+  sprintf(buf,"cannot convert \"%s\" into \"%s\"",from,to);
+  error(pos,buf);
+}
+
+
 

@@ -35,7 +35,9 @@ void populate_env(env_t* env);
 /* stdin stdout */
 ast_t* builtin_print(ast_t* ast);
 ast_t* builtin_println(ast_t* ast);
+ast_t* builtin_read(void);
+ast_t* builtin_readln(void);
 
-ast_t* builtin_to_string(ast_t* ast);
+  ast_t* builtin_to_string(ast_t* ast);
 
 #endif /* __BUILTIN_H__ */
