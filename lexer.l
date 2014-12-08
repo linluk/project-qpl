@@ -32,6 +32,7 @@
 %{
 /* lib */
 #include <stdlib.h>
+#include <inttypes.h>
 
 /* own */
 #include "ast.h"
@@ -91,7 +92,7 @@ void lex_inc_line(void);
 %%
 
 void lex_integer(char* value) {
-  yylval.i = atoi(value);
+  yylval.i = strtoimax(value,NULL,10);
 }
 
 void lex_double(char* value) {

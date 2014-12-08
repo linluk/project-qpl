@@ -27,6 +27,7 @@
 /* lib */
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 /* own */
 #include "ast.h"
@@ -39,31 +40,31 @@
 #include "ops.h"
 
 /* prototypes */
-ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (math_func)(double,double));
-double __add_func(double d1, double d2);
-double __sub_func(double d1, double d2);
-double __mul_func(double d1, double d2);
-double __div_func(double d1, double d2);
+ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,long double (math_func)(long double,long double));
+long double __add_func(long double d1, long double d2);
+long double __sub_func(long double d1, long double d2);
+long double __mul_func(long double d1, long double d2);
+long double __div_func(long double d1, long double d2);
 
-ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(double,double));
-char __gt_func(double d1, double d2);
-char __lt_func(double d1, double d2);
-char __ge_func(double d1, double d2);
-char __le_func(double d1, double d2);
+ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(long double,long double));
+char __gt_func(long double d1, long double d2);
+char __lt_func(long double d1, long double d2);
+char __ge_func(long double d1, long double d2);
+char __le_func(long double d1, long double d2);
 ast_t* eval_eqneq(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2);
 
 /* prototypes in "ops.c" */
-ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (math_func)(double,double)) {
+ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,long double (math_func)(long double,long double)) {
   ast_t* result;
   result = NULL;
   switch(ast1->type) {
     case at_integer:
       switch(ast2->type) {
         case at_integer:
-          result = create_integer((int)math_func((double)ast1->data.i, (double)ast2->data.i));
+          result = create_integer((intmax_t)math_func((long double)ast1->data.i, (long double)ast2->data.i));
           break;
         case at_double:
-          result = create_double(math_func((double)ast1->data.i, ast2->data.d));
+          result = create_double(math_func((long double)ast1->data.i, ast2->data.d));
           break;
         default:
           error_apply(NULL,get_op_str(op), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
@@ -73,7 +74,7 @@ ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (mat
     case at_double:
       switch(ast2->type) {
         case at_integer:
-          result = create_double(math_func(ast1->data.d, (double)ast2->data.i));
+          result = create_double(math_func(ast1->data.d, (long double)ast2->data.i));
           break;
         case at_double:
           result = create_double(math_func(ast1->data.d, ast2->data.d));
@@ -90,34 +91,34 @@ ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,double (mat
   return result;
 }
 
-double __add_func(double d1, double d2) {
+long double __add_func(long double d1, long double d2) {
   return d1 + d2;
 }
 
-double __sub_func(double d1, double d2) {
+long double __sub_func(long double d1, long double d2) {
   return d1 - d2;
 }
 
-double __mul_func(double d1, double d2) {
+long double __mul_func(long double d1, long double d2) {
   return d1 * d2;
 }
 
-double __div_func(double d1, double d2) {
+long double __div_func(long double d1, long double d2) {
   // TODO : div by zero
   return d1 / d2;
 }
 
-ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(double,double)) {
+ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(long double,long double)) {
   ast_t* result;
   result = NULL;
   switch(ast1->type) {
     case at_integer:
       switch(ast2->type) {
         case at_integer:
-          result = create_bool((int)comp_func((double)ast1->data.i, (double)ast2->data.i));
+          result = create_bool(comp_func((long double)ast1->data.i, (long double)ast2->data.i));
           break;
         case at_double:
-          result = create_bool(comp_func((double)ast1->data.i, ast2->data.d));
+          result = create_bool(comp_func((long double)ast1->data.i, ast2->data.d));
           break;
         default:
           error_apply(NULL,get_op_str(op), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
@@ -127,7 +128,7 @@ ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp
     case at_double:
       switch(ast2->type) {
         case at_integer:
-          result = create_bool(comp_func(ast1->data.d, (double)ast2->data.i));
+          result = create_bool(comp_func(ast1->data.d, (long double)ast2->data.i));
           break;
         case at_double:
           result = create_bool(comp_func(ast1->data.d, ast2->data.d));
@@ -144,19 +145,19 @@ ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp
   return result;
 }
 
-char __gt_func(double d1, double d2) {
+char __gt_func(long double d1, long double d2) {
   return d1 > d2 ? 1 : 0;
 }
 
-char __lt_func(double d1, double d2) {
+char __lt_func(long double d1, long double d2) {
   return d1 < d2 ? 1 : 0;
 }
 
-char __ge_func(double d1, double d2) {
+char __ge_func(long double d1, long double d2) {
   return d1 >= d2 ? 1 : 0;
 }
 
-char __le_func(double d1, double d2) {
+char __le_func(long double d1, long double d2) {
   return d1 <= d2 ? 1 : 0;
 }
 

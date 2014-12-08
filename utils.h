@@ -38,4 +38,7 @@ void free_null(void** p);
 
 char* replace_str(const char* str, const char* old, const char* new);
 
+char is_str_int(const char* str);
+char is_str_dbl(const char* str);
+
 #endif /* __UTILS_H__ */

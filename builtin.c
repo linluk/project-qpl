@@ -27,6 +27,8 @@
 /* lib */
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include <limits.h>
 
 /* own */
@@ -47,6 +49,8 @@ void populate_env(env_t* env) {
 
   /* conversion */
   set_ast_to_id(env,"str",create_builtin_1(&builtin_to_string));
+  set_ast_to_id(env,"int",create_builtin_1(&builtin_to_integer));
+  set_ast_to_id(env,"dbl",create_builtin_1(&builtin_to_double));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -116,8 +120,8 @@ ast_t* builtin_to_string(ast_t* ast) {
   str = NULL;
   switch(ast->type) {
     case at_bool: sprintf(buf,"%s",ast->data.b == 0 ? "false" : "true"); break;
-    case at_double: sprintf(buf,"%f",ast->data.d); break;
-    case at_integer: sprintf(buf,"%d",ast->data.i); break;
+    case at_double: sprintf(buf,"%Lf",ast->data.d); break;
+    case at_integer: sprintf(buf,"%jd",ast->data.i); break;
     case at_string: str = create_string(strdup(ast->data.s)); break;
     case at_function: sprintf(buf,"function <%p>",ast); break;
     default: error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_string));
@@ -129,6 +133,48 @@ ast_t* builtin_to_string(ast_t* ast) {
   return str;
 }
 
+ast_t* builtin_to_integer(ast_t* ast) {
+  ast_t* num;
+  num = NULL;
+  switch(ast->type) {
+    case at_bool: num = create_integer(ast->data.b == 0 ? 0 : 1); break;
+    case at_double: num = create_integer((intmax_t)ast->data.d); break;
+    case at_integer: num = create_integer(ast->data.i); break;
+    case at_string:
+      if(is_str_int(ast->data.s)) {
+        num = create_integer(strtoimax(ast->data.s,NULL,10)); 
+      } else {
+        error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_integer));
+      }
+      break;
+    default: error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_integer));
+  }
+  num->ref_count = 0;
+  return num;
+}
 
+ast_t* builtin_to_double(ast_t* ast) {
+  ast_t* dbl;
+  dbl = NULL;
+  switch(ast->type) {
+    case at_bool: dbl = create_double(ast->data.b == 0 ? 0.0 : 1.0); break;
+    case at_double: dbl = create_double(ast->data.d); break;
+    case at_integer: dbl = create_double((long double)ast->data.i); break;
+    case at_string:
+      if(is_str_dbl(ast->data.s)) {
+        dbl = create_double(atof(ast->data.s));
+      } else {
+        error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_integer));
+      }
+      break;
+    default: error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_integer));
+  }
+  dbl->ref_count = 0;
+  return dbl;
+}
+
+ast_t* builtin_to_bool(ast_t* ast) {
+// TODO
+}
 
 

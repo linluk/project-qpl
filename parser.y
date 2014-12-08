@@ -32,6 +32,7 @@
 /* lib */
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 /* own */
 #include "ast.h"
@@ -46,8 +47,8 @@
 
 /* this union defines the yyval structure -> the $$, $1..$N values */
 %union {
-  int i;             /* integer */
-  double d;          /* double */
+  intmax_t i;             /* integer */
+  long double d;          /* double */
   char b;            /* bool */
   char* s;           /* string */
   enum operator_e o; /* operator */
