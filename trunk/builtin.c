@@ -27,17 +27,25 @@
 /* lib */
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 /* own */
 #include "ast.h"
 #include "env.h"
+#include "utils.h"
+#include "error.h"
 
 /* self */
 #include "builtin.h"
 
 void populate_env(env_t* env) {
+  /* stdin stdout */
   set_ast_to_id(env,"print",create_builtin_1(&builtin_print));
   set_ast_to_id(env,"println",create_builtin_1(&builtin_println));
+  set_ast_to_id(env,"read",create_builtin_0(&builtin_read));
+  set_ast_to_id(env,"readln",create_builtin_0(&builtin_readln));
+
+  /* conversion */
   set_ast_to_id(env,"str",create_builtin_1(&builtin_to_string));
 }
 
@@ -56,6 +64,52 @@ ast_t* builtin_println(ast_t* ast) {
   return result;
 }
 
+ast_t* builtin_read(void) {
+  ast_t* result;
+  int c;
+  char* s;
+  c = fgetc(stdin);
+  if(c >= 0) {
+    s = (char*)check_malloc(2 * sizeof(char));
+    s[1] = '\0';
+    s[0] = (char)((c > CHAR_MAX) ? (c - (UCHAR_MAX + 1)) : c);
+  } else {
+    s = (char*)check_malloc(1 * sizeof(char));
+    s[0] = '\0';
+  };
+  result = create_string(s);
+  result->ref_count = 0;
+  return result;
+}
+
+ast_t* builtin_readln(void) {
+#define CHUNK_SIZE (80)
+  ast_t* result;
+  int c;
+  char* s;
+  size_t size;
+  size_t idx;
+  size = CHUNK_SIZE;
+  idx = 0;
+  s = (char*)check_malloc(size * sizeof(char));
+  c = fgetc(stdin);
+  while(c >= 0 && c != '\n') {
+    s[idx] = (char)((c > CHAR_MAX) ? (c - (UCHAR_MAX + 1)) : c);
+    idx++;
+    if(idx >= size) {
+      size += CHUNK_SIZE;
+      s = (char*)check_realloc(s,size * sizeof(char));
+    }
+    c = fgetc(stdin);
+  }
+  s = (char*)check_realloc(s,(idx + 1) * sizeof(char));
+  s[idx] = '\0';
+  result = create_string(s);
+  result->ref_count = 0;
+  return result;
+#undef CHUNK_SIZE
+}
+
 ast_t* builtin_to_string(ast_t* ast) {
   ast_t* str;
   char buf[50];
@@ -65,6 +119,8 @@ ast_t* builtin_to_string(ast_t* ast) {
     case at_double: sprintf(buf,"%f",ast->data.d); break;
     case at_integer: sprintf(buf,"%d",ast->data.i); break;
     case at_string: str = create_string(strdup(ast->data.s)); break;
+    case at_function: sprintf(buf,"function <%p>",ast); break;
+    default: error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_string));
   }
   if(str == NULL) {
     str = create_string(strdup(buf));

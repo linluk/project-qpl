@@ -45,7 +45,13 @@ env_t* create_env(void) {
 }
 
 void free_env(env_t* env) {
-  free_map(env->map, 0); /* no need to free elements */  // FIXME: thats not true! --> i need to free some of them (-> ref_count)
+  ast_t* tmp;
+  if((tmp = iter_first(env->map)) != NULL) {
+    do {
+//      dec_ref(tmp);
+    } while((tmp = iter_next(env->map)) != NULL);
+  }
+  free_map(env->map, 0);
   free(env);
 }
 
@@ -61,13 +67,9 @@ ast_t* get_ast_by_id(env_t* env, const char* id) {
 void set_ast_to_id(env_t* env, const char* id, ast_t* ast) {
   ast_t* old;
   old = (ast_t*)add_value(env->map, id, ast);
+  inc_ref(ast);
   if(old != NULL) {
-    if(old->ref_count > 0) {
-      ast->ref_count--;
-      if(ast->ref_count == 0) {
-        free_ast(old);
-      }
-    }
+    dec_ref(old);
   }
 }
 

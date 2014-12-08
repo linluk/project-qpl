@@ -161,6 +161,7 @@ ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*));
 const char* get_ast_type_name(ast_type_t ast);
 const char* get_op_str(operator_t op);
 
+void inc_ref(ast_t* ast);
 void dec_ref(ast_t* ast);
 
 int is_numeric_ast_type(ast_type_t ast);

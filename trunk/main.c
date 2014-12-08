@@ -37,34 +37,8 @@ int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 #include "lexer.h"
 #include "parser.h"
 
-//ast_t* builtin_print_test(ast_t* ast) {
-// printf("print function called!\n");
-// return NULL;
-//}
 
 int main(int argc, char** argv) {
-
-  /*char* tst;
-  tst = replace_str("hallo ich bin ein test","ich","du");
-  printf("%s\n",tst);
-  free(tst);
-  tst = replace_str("hallo ich bin ein test","ichix","du");
-  printf("%s\n",tst);
-  free(tst);
-  tst = replace_str("hallo ich bin ich ein ich test","ich","du");
-  printf("%s\n",tst);
-  free(tst);
-  tst = replace_str("hallo ichich bin ein test","ich","du");
-  printf("%s\n",tst);
-  free(tst);
-  tst = replace_str("hallo ich bin ein test","ich","");
-  printf("%s\n",tst);
-  free(tst);
-  tst = replace_str("","ich","du");
-  printf("%s\n",tst);
-  free(tst);
-
-  return 0;*/
 
   ast_t* ast;
   ast = NULL;
@@ -84,7 +58,7 @@ int main(int argc, char** argv) {
 
   yyparse(&ast);
 
-  print_ast(ast,0);
+//  print_ast(ast,0);
 
   fclose(yyin);
 
@@ -96,8 +70,6 @@ int main(int argc, char** argv) {
     env = create_env();
     populate_env(env);
 
-    //set_ast_to_id(env,"print",create_builtin_1(&builtin_print_test));
-
     vm_exec(env, ast);
 
 //    free_ast(ast); // free ast didnt work, because vm_exec() restructures the ast
@@ -108,7 +80,7 @@ int main(int argc, char** argv) {
                      //
                      //  is this really the problem?? think about it again !!
                      //  does vm_exec() really changes the ast?? that would be
-                     //  dangerous at all: think about a loop
+                     //  dangerous at all: think about a loop or a recursive function.
     free_env(env);
 
   } else {

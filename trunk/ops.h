@@ -35,15 +35,21 @@ ast_t* eval_add(env_t* env, ast_t* ast1, ast_t* ast2);
 ast_t* eval_sub(env_t* env, ast_t* ast1, ast_t* ast2);
 ast_t* eval_mul(env_t* env, ast_t* ast1, ast_t* ast2);
 ast_t* eval_div(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_mod(env_t* env, ast_t* ast1, ast_t* ast2);
 
 /* logical ops */
 ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_or(env_t* env, ast_t* ast1, ast_t* ast2);
 
 /* compare ops */
 ast_t* eval_gt(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_lt(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_ge(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_le(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_eq(env_t* env, ast_t* ast1, ast_t* ast2);
+ast_t* eval_neq(env_t* env, ast_t* ast1, ast_t* ast2);
 
 /* string ops */
 ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2);
-
 
 #endif /* __OPS_H__ */
