@@ -51,6 +51,12 @@ void error_expected(position_t* pos, const char* expected, const char* received)
   error(pos,buf);
 }
 
+void error_unexpected(position_t* pos, const char* unexpected) {
+  char buf[250];
+  sprintf(buf,"unexpected \"%s\"", unexpected);
+  error(pos,buf);
+}
+
 void error_assign(position_t* pos, const char* from, const char* to) {
   char buf[250];
   sprintf(buf,"cannot assign \"%s\" to \"%s\"", from, to);

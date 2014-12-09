@@ -36,6 +36,8 @@ void vm_exec(env_t* env, ast_t* ast);
 void exec_statements(env_t* env, ast_t* ast);
 void exec_assignment(env_t* env, ast_t* ast);
 void exec_conditional(env_t* env, ast_t* ast);
+void exec_while(env_t* env, ast_t* ast);
+void exec_dowhile(env_t* env, ast_t* ast);
 
 int exec_if(env_t* env, ast_t* ast);
 

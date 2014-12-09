@@ -218,6 +218,38 @@ void exec_conditional(env_t* env, ast_t* ast) {
   }
 }
 
+void exec_while(env_t* env, ast_t* ast) {
+  ast_t* cond;
+  cond = eval_expression(env, ast->data.while_statement.condition);
+  if(cond->type != at_bool) {
+    error_expected(NULL,get_ast_type_name(at_bool),get_ast_type_name(cond->type));
+  } else {
+    while(cond->data.b) {
+      exec_statements(env, ast->data.while_statement.statements);
+      dec_ref(cond);
+      cond = eval_expression(env, ast->data.while_statement.condition);
+    }
+    dec_ref(cond);
+  }
+}
+
+void exec_dowhile(env_t* env, ast_t* ast) {
+  /* same as exec_while() but with a call of exec_statements() before. */
+  ast_t* cond;
+  exec_statements(env, ast->data.while_statement.statements);
+  cond = eval_expression(env, ast->data.while_statement.condition);
+  if(cond->type != at_bool) {
+    error_expected(NULL,get_ast_type_name(at_bool),get_ast_type_name(cond->type));
+  } else {
+    while(cond->data.b) {
+      exec_statements(env, ast->data.while_statement.statements);
+      dec_ref(cond);
+      cond = eval_expression(env, ast->data.while_statement.condition);
+    }
+    dec_ref(cond);
+  }
+}
+
 void exec_statements(env_t* env, ast_t* ast) {
   size_t i;
   for(i = 0; i < ast->data.statements.count; i++) {
@@ -239,12 +271,13 @@ void exec_statements(env_t* env, ast_t* ast) {
         exec_conditional(env, ast->data.statements.statements[i]);
         break;
       case at_while:
+        exec_while(env, ast->data.statements.statements[i]);
         break;
       case at_dowhile:
+        exec_dowhile(env, ast->data.statements.statements[i]);
         break;
       default:
-        fprintf(stderr,"error, unexpected: \"%s\"\n",get_ast_type_name(ast->data.statements.statements[i]->type));
-        exit(1);
+        error_unexpected(NULL,get_ast_type_name(ast->data.statements.statements[i]->type));
         break;
     }
   }
