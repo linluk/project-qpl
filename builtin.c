@@ -175,6 +175,7 @@ ast_t* builtin_to_double(ast_t* ast) {
 
 ast_t* builtin_to_bool(ast_t* ast) {
 // TODO
+  return NULL;
 }
 
 

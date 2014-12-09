@@ -93,12 +93,13 @@ statement : assignment T_DELIMITER { $$ = $1; }
           | call T_DELIMITER { $$ = $1; }
           ;
 
-assignment : assignleft T_ASSIGN expression { $$ = create_assignment($1, $3); /* variable */ }
-           | assignleft T_ASSIGN function { $$ = create_assignment($1, $3); /* function */ }
+assignment : assignleft T_ASSIGN expression { $$ = create_assignment($1, $3); }
+           | assignleft T_ASSIGN function { $$ = create_assignment($1, $3); }
            ;
 
 assignleft : T_ID { $$ = $1; }
-           | T_AT { $$ = "@"; }
+           | T_AT { $$ = strdup("@"); }
+           ;
 
 expression : term T_CMPOP expression { $$ = create_expression($2, $1, $3); }
            | term T_STROP expression { $$ = create_expression($2, $1, $3); }
