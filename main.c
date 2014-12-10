@@ -26,6 +26,9 @@
 
 #include <stdio.h>
 
+/* need to create a stack trace on crash */
+#include <execinfo.h>
+#include <signal.h>
 
 #include "ast.h"
 #include "vm.h"
@@ -38,19 +41,33 @@ int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
 #include "parser.h"
 
 
+void sigsegv_handler(int sig) {
+  void *array[25];
+  size_t size;
+  // get void*'s for all entries on the stack
+  size = backtrace(array, 25);
+  // print out all the frames to stderr
+  fprintf(stderr, "Error: signal %d:\n", sig);
+  backtrace_symbols_fd(array, size, STDERR_FILENO);
+  exit(1);
+}
+
+
 int main(int argc, char** argv) {
+  signal(SIGSEGV, sigsegv_handler);   // install our sigsegv_handler
+                                      // disable in production code
 
   ast_t* ast;
   ast = NULL;
 
-/*  if(argc > 1) {
+  if(argc > 1) {
     yyin = fopen(argv[1], "r");
   } else {
     yyin = stdin;
   }
-*/
+
   /*** testing ***/
-  yyin = fopen("example.qpl", "r");
+//  yyin = fopen("example.qpl", "r");
 
   if(yyin == NULL) {
     printf("yyin == NULL\n");

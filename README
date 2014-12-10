@@ -14,14 +14,19 @@
 QPL (also qpl) is a General Purpose Programming Language written in C.
 
 
-
 ==============================================================================
 ** How To Build: **
 ==============================================================================
-Currently there is a Shell Script called <build.sh>. You just need to make it
-runable (f.e. '$ chmod u+x build.sh') and run it (f.e. '$ ./build.sh').
+Use the Makefile to build it. You Dont need to configure anything, just call
+'make'. If succeeded its done.
 You need to have gcc, bison and flex installed on your system to build QPL.
-
+It compiles fine with these Versions:
+  gcc 4.7.2 (Debian(4.7.2-5)
+  bison 2.5
+  flex 2.5.35
+On Debian GNU/Linux 7.7 (wheezy) 3.2.0-4-amd64.
+If you experience Problems building the Application please add an issue on
+<http://code.google.com/p/project-qpl/>.
 
 
 ==============================================================================
@@ -65,4 +70,12 @@ the source code.
 Use this command to get the latest sources:
 '$ svn  checkout  http://project-qpl.googlecode.com/svn/trunk/  qpl'
  
+
+==============================================================================
+** Development: **
+==============================================================================
+If you are interested in helping me with development then join the mailing
+list (I will add one "soon"; just after finishing my exams and finishing the
+final year project (hopefully in the middle of 2015)).
+
 

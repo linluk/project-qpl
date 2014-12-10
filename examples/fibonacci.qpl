@@ -1,0 +1,30 @@
+/* author: lukas singer
+ * created: 2014/12/10
+ * desc.: demonstrates how to use recursive functions
+ */
+
+/* the fibonacci number that should be displayed */
+target = 16;
+
+/* fibonacci function */
+f = @(x) {
+  /*
+   *            1             |  if n < 2
+   *          /
+   *         /
+   *   f   =
+   *    n    \
+   *          \
+   *            f    + f      | if n >= 2
+   *             n-1    n-2
+   */
+  if(x >= 2) {
+    @ = f(x-1) + f(x-2);
+  }else{
+    @ = 1;
+  }
+};
+
+/* call the function and print the result */
+println("fibonacci of " $ str(target) $ " is: " $ str(f(target)));
+

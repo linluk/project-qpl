@@ -1,0 +1,32 @@
+
+max = 1000;
+
+isPrime = @(x) {
+  if(x < 3) {
+    @ = x == 2;
+  } elif (((x % 2) == 0) | ((x % 3) == 0)) {
+    @ = false;
+  } else {
+    t = x / 2;
+    i = 5;
+    b = true;
+    while((i < t) & b) {
+      if((x % i) == 0) {
+        b = false;
+      }
+      i = i + 2;
+    }
+    @ = b;
+  }
+};
+
+println("printing all primes under " $ str(max) $ ":");
+
+i = 0;
+while(i < max) {
+  if(isPrime(i)) {
+    println(i);
+  }
+  i = i + 1;
+}
+

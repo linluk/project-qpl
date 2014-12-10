@@ -125,7 +125,7 @@ void lex_operator(char* value) {
       case '/': OPB(op_div);
       case '%': OPB(op_mod);
       case '>': OPB(op_gt);
-      case '<': OPB(op_gt);
+      case '<': OPB(op_lt);
       case '&': OPB(op_and);
       case '|': OPB(op_or);
       case '$': OPB(op_cat);

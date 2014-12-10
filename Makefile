@@ -25,8 +25,9 @@
 LEX=flex
 YACC=bison
 CC=gcc
-CFLAGS=-g -Wall
-LFLAGS=
+#-rdynamic is needed for stack trace on crash
+CFLAGS=-g -rdynamic -Wall
+LFLAGS=-g -rdynamic
 BIN=qpl
 OBJ=parser.o lexer.o main.o ops.o env.o error.o vm.o ast.o utils.o map.o builtin.o
 

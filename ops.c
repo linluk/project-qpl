@@ -166,11 +166,21 @@ ast_t* eval_eqneq(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2) {
   result = NULL;
   if(ast1->type == ast2->type) {
     switch(ast1->type) {
-      case at_bool: result = create_bool(ast1->data.b == ast2->data.b ? 1 : 0);
-      case at_double: result = create_bool( ast1->data.d == ast2->data.d ? 1 : 0);
-      case at_integer: result = create_bool( ast1->data.i == ast2->data.i ? 1 : 0);
-      case at_string: result = create_bool( strcmp(ast1->data.s, ast2->data.s) == 0 ? 1 : 0);
-      default: error_apply(NULL,get_op_str(op_eq), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+      case at_bool:
+        result = create_bool(ast1->data.b == ast2->data.b ? 1 : 0);
+        break;
+      case at_double:
+        result = create_bool(ast1->data.d == ast2->data.d ? 1 : 0);
+        break;
+      case at_integer:
+        result = create_bool(ast1->data.i == ast2->data.i ? 1 : 0);
+        break;
+      case at_string:
+        result = create_bool(strcmp(ast1->data.s, ast2->data.s) == 0 ? 1 : 0);
+        break;
+      default: 
+        error_apply(NULL,get_op_str(op_eq), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
+        break;
     }
     if(op == op_neq) {
       result->data.b = result->data.b == 0 ? 1 : 0;
