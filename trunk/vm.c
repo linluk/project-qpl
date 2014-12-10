@@ -107,7 +107,7 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
           break;
         }
         default:
-          /* this should never happen */
+          /* if you create a builtin function with more parameters then you have to add a case here */
           break;
       }
       break;
