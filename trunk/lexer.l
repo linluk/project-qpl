@@ -38,6 +38,7 @@
 #include "ast.h"
 #include "parser.h"
 #include "utils.h"
+#include "error.h"
 
 void lex_integer(char* value);
 void lex_double(char* value);
@@ -45,6 +46,7 @@ void lex_string(char* value);
 void lex_bool(char* value);
 void lex_operator(char* value);
 void lex_id(char* value);
+void lex_error(void);
 void lex_inc_line(void);
 
 %}
@@ -55,6 +57,7 @@ void lex_inc_line(void);
 %%
 
 
+"//".*                                  { /* skip */ }
 "/*"                                    { BEGIN(X_COMMENT); }
 <X_COMMENT>{
 "*/"                                    { BEGIN(INITIAL); }
@@ -81,13 +84,14 @@ void lex_inc_line(void);
 (0|[1-9][0-9]*)                         { lex_integer(yytext); return T_INTEGER; }
 (0|[1-9][0-9]*)\.[0-9]+                 { lex_double(yytext); return T_DOUBLE; }
 \"[^\"\n]*\"                            { lex_string(yytext); return T_STRING; }
+"."                                     { return T_DOT; /* TODO: implement in parser, it is unused so far! */}
 "+"|"-"                                 { lex_operator(yytext); return T_ADDOP; }
 "*"|"/"|"%"                             { lex_operator(yytext); return T_MULOP; }
 ">"|"<"|">="|"<="|"=="|"!="             { lex_operator(yytext); return T_CMPOP; }
 "&"                                     { lex_operator(yytext); return T_ANDOP; }
 "|"                                     { lex_operator(yytext); return T_OROP; }
 "$"                                     { lex_operator(yytext); return T_STROP; }
-.                                       { fprintf(stderr, "unexpected token: \"%s\"", yytext); exit(1); }
+.                                       { lex_error(); }
 
 %%
 
@@ -109,8 +113,10 @@ void lex_bool(char* value) {
   } else if(strcmp(value,"false") == 0) {
     yylval.b = 0;
   } else {
-    fprintf(stderr,"unexpected literal: \"%s\"",value);
-    exit(1);
+    position_t pos;
+    pos.file = NULL;
+    pos.line = yylineno;
+    error_unexpected(&pos,value);
   }
 }
 
@@ -129,9 +135,12 @@ void lex_operator(char* value) {
       case '&': OPB(op_and);
       case '|': OPB(op_or);
       case '$': OPB(op_cat);
-      default:
-        fprintf(stderr,"unexpected operator: \"%s\"",value);
-        exit(1);
+      default:{
+        position_t p;
+        p.file = NULL;
+        p.line = yylineno;
+        error_unexpected(&p,value);
+      }
     }
   } else {
     /* */ if(strcmp(value,"!=") == 0) {
@@ -143,8 +152,10 @@ void lex_operator(char* value) {
     }else if(strcmp(value,"<=") == 0) {
       OP(op_le);
     } else {
-      fprintf(stderr,"unexpected operator: \"%s\"",value);
-      exit(1);
+        position_t p;
+        p.file = NULL;
+        p.line = yylineno;
+        error_unexpected(&p,value);
     }
   }
 #undef OP
@@ -155,7 +166,15 @@ void lex_id(char* value) {
   yylval.id = strdup(value);
 }
 
+void lex_error(void) {
+  position_t p;
+  p.file = NULL;
+  p.line = yylineno;
+  error_unexpected(&p,"unknown token");
+}
+
 void lex_inc_line(void) {
   yylineno++;
 }
+
 

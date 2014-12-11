@@ -27,7 +27,12 @@
 #ifndef __AST_H__
 #define __AST_H__
 
+/* lib */
 #include <stdint.h>
+
+/* own */
+#include "map.h"
+
 
 typedef enum ast_type_e {
   at_identifier,
@@ -41,13 +46,16 @@ typedef enum ast_type_e {
   at_while, at_dowhile,
   at_function, at_params,
   at_builtin,
+  at_datadef,  /* data definition */
+  at_instance  /* data instance */
 
   /* add values before this */
 } ast_type_t;
 
 typedef enum call_type_e {
-  ct_named,
-  ct_anonymous
+  ct_named,    /* "normal" function call (f.e: str(), doSomething(), ...) */
+  ct_method,   /* method call (f.e: x.do(), abc.get_str(), ...) */
+  ct_anonymous /* anonymous call (f.e:  fun(x){@=x*x;}(3), ...) */
 } call_type_t;
 
 typedef enum operator_e {
@@ -135,8 +143,16 @@ typedef struct ast_s {
         struct ast_s* (*builtin_0)();
         struct ast_s* (*builtin_1)(struct ast_s*);
         struct ast_s* (*builtin_2)(struct ast_s*, struct ast_s*);
+        struct ast_s* (*builtin_3)(struct ast_s*, struct ast_s*, struct ast_s*);
       } function;
     } builtin;
+    struct { /* datatype definition */
+      size_t count;
+      struct ast_s** statements;
+    } datadef;
+    struct { /* instance */
+      struct env_s* self;
+    } instance;
   } data;
 } ast_t;
 

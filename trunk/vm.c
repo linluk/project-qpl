@@ -89,7 +89,6 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
         case 1: {
           ast_t* p;
           p = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]);
-          inc_ref(p);
           result = func->data.builtin.function.builtin_1(p);
           dec_ref(p);
           break;
@@ -99,11 +98,22 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
           ast_t* p2;
           p1 = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]);
           p2 = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[1]);
-          inc_ref(p1);
-          inc_ref(p2);
           result = func->data.builtin.function.builtin_2(p1,p2);
           dec_ref(p1);
           dec_ref(p2);
+          break;
+        }
+        case 3: {
+          ast_t* p1;
+          ast_t* p2;
+          ast_t* p3;
+          p1 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[0]);
+          p2 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[1]);
+          p3 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[2]);
+          result = func->data.builtin.function.builtin_3(p1,p2,p3);
+          dec_ref(p1);
+          dec_ref(p2);
+          dec_ref(p3);
           break;
         }
         default:

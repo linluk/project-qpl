@@ -39,7 +39,11 @@ void error(position_t* pos, const char* emsg) {
   if(pos == NULL) {
     fprintf(stderr, "error: %s\n",emsg);
   } else {
-    fprintf(stderr,"error(%s:%d): %s\n", pos->file, pos->line, emsg);
+    if(pos->file == NULL) {
+      fprintf(stderr,"error (line: %d): %s\n", pos->line, emsg);
+    } else {
+      fprintf(stderr,"error (%s:%d): %s\n", pos->file, pos->line, emsg);
+    }
   }
   exit(1);
 }
