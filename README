@@ -24,6 +24,7 @@ It compiles fine with these Versions:
   gcc 4.7.2 (Debian(4.7.2-5)
   bison 2.5
   flex 2.5.35
+  glibc 2.13
 On Debian GNU/Linux 7.7 (wheezy) 3.2.0-4-amd64.
 If you experience Problems building the Application please add an issue on
 <http://code.google.com/p/project-qpl/>.
@@ -70,6 +71,13 @@ the source code.
 Use this command to get the latest sources:
 '$ svn  checkout  http://project-qpl.googlecode.com/svn/trunk/  qpl'
  
+
+==============================================================================
+** Contact: **
+==============================================================================
+You can contact me by email under <lukas42singer (at) gmail (dot) com>.
+I speak german and (bad) english, both are fine.
+
 
 ==============================================================================
 ** Development: **

@@ -47,8 +47,8 @@
 
 /* this union defines the yyval structure -> the $$, $1..$N values */
 %union {
-  intmax_t i;             /* integer */
-  long double d;          /* double */
+  intmax_t i;        /* integer */
+  long double d;     /* double */
   char b;            /* bool */
   char* s;           /* string */
   enum operator_e o; /* operator */
@@ -60,7 +60,7 @@
   */
 }
 
-%token T_LBRACKET T_RBRACKET T_LPAREN T_RPAREN T_ASSIGN T_AT T_WHILE T_DO T_COMMA T_DELIMITER
+%token T_LBRACKET T_RBRACKET T_LPAREN T_RPAREN T_ASSIGN T_AT T_WHILE T_DO T_COMMA T_DELIMITER T_DOT
 %token<id> T_ID
 %token<o> T_ADDOP T_MULOP T_CMPOP T_ANDOP T_OROP T_STROP T_IF T_ELIF T_ELSE
 %token<i> T_INTEGER
@@ -83,7 +83,7 @@ void yyerror(ast_t** ast, const char* const emsg);
 program : statements { (*(ast_t**)ast_dest) = $1; }
         ;
 
-statements :   { $$ = NULL; }
+statements :  { $$ = NULL; }
            | statements statement { $$ = create_statement($1, $2); }
            ;
 
@@ -131,11 +131,11 @@ if_statement : T_IF T_LPAREN expression T_RPAREN block { $$ = create_if($3, $5);
 elif_statement : T_ELIF T_LPAREN expression T_RPAREN block { $$ = create_if($3, $5);/* create_if() here and combine them to elif_statement_S_ */ }
                ;
 
-elif_statements : { $$ = NULL; }
+elif_statements :  { $$ = NULL; }
                 | elif_statements elif_statement { $$ = create_elif($1, $2); }
                 ;
 
-else_statement : { $$ = NULL; }
+else_statement :  { $$ = NULL; }
                | T_ELSE block { $$ = $2; }
                ;
 
@@ -147,7 +147,7 @@ while_loop : T_WHILE T_LPAREN expression T_RPAREN block { $$ = create_while($3, 
            ;
 
 do_while_loop : T_DO block T_LPAREN expression T_RPAREN { $$ = create_dowhile($4, $2); }
-             ;
+              ;
 
 block : T_LBRACKET statements T_RBRACKET { $$ = $2; }
       ;
@@ -157,7 +157,7 @@ call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($1, NULL, $3); }
      ;
 
 callargs : non_empty_callargs { $$ = $1; }
-         | { $$ = NULL; }
+         |  { $$ = NULL; }
          ;
 
 non_empty_callargs : expression { $$ = create_callarg(NULL, $1); }
@@ -168,7 +168,7 @@ function : T_AT T_LPAREN params T_RPAREN block { $$ = create_function($3, $5); }
          ;
 
 params : non_empty_params { $$ = $1; }
-       | { $$ = NULL; }
+       |  { $$ = NULL; }
        ;
 
 non_empty_params : T_ID { $$ = create_param(NULL, $1); }
@@ -178,7 +178,7 @@ non_empty_params : T_ID { $$ = create_param(NULL, $1); }
 %%
 
 void yyerror(ast_t** ast, const char* const emsg) {
-  fprintf(stderr, "parse error: \"%s\"\n", emsg);
+  fprintf(stderr, "parse error (line %d): \"%s\"\n", yylineno, emsg);
   exit(1);
 }
 

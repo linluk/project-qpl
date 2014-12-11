@@ -1,0 +1,21 @@
+
+/* you can define custom data types like this: */
+/* as soon as i've implemented them ;) */
+
+my_type: {
+  sval = "hi";
+  get_str = @(){ @ = self.sval; };
+  ival = 42;
+  get_int = @(){ @ = self.ival; };
+  set_int = @(i){ @ self.ival = i; };
+}
+
+x = new(my_type);
+println("sval: "x.get_str() $ "; ival: " $ str(x.get_int()));
+
+x.set_int(23);
+println("ival is now: " $ str(x.get_int()));
+
+y = new(my_type);
+println("ival of a new instance is: " $ str(y.get_int()));
+

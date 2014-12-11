@@ -1,0 +1,14 @@
+
+ datatypes implementation. see examples/datatypes.qpl.
+   exten parser function calls to recognise method calls.
+   add the caller to the callargs (something like create_call($3,create_callargs($5, $1)); )
+   implement it in vm.c first add the params as usual, then set the instance like ( set_ast_to_id(inner, "self", <LAST_CALLARG>));
+   be aware that in case of at_method callargs->count must be equal to params->count + 1!
+   add create_instance() and create_datadef().
+   implement builtin function new().
+
+ implement a list datatype (builtin of course!). see examples/lists.qpl
+
+ rewrite and commit the bnf-file
+
+

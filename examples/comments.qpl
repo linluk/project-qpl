@@ -1,0 +1,17 @@
+
+println("comment test");
+
+println(" /*  */ ");
+// /* println(" */ ");
+println(" // ");
+
+/*
+// some text
+*/
+
+// this is a test comment
+//
+// /*
+
+println("test done");
+
