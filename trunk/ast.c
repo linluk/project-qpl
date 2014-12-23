@@ -32,6 +32,8 @@
 /* own */
 #include "utils.h"
 #include "error.h"
+#include "env.h"
+#include "vm.h"
 
 /* self */
 #include "ast.h"
@@ -272,6 +274,20 @@ ast_t* create_param(ast_t* params, char* param) {
   return params;
 }
 
+ast_t* create_new(ast_t* datadef) {
+  ast_t* ast;
+  ast = create_ast(at_new);
+  ast->data.newop.datadef = datadef;
+  return ast;
+}
+
+ast_t* create_instance(struct env_s* self) {
+  ast_t* ast;
+  ast = create_ast(at_instance);
+  ast->data.instance.self = self;
+  return ast;
+}
+
 ast_t* create_builtin_0(ast_t*(*builtin_0)()) {
   ast_t* ast;
   ast = create_ast(at_builtin);
@@ -400,6 +416,9 @@ void print_ast(ast_t* ast, int indent){
           case ct_named:
             printf("%s: %s\n",tn, ast->data.call.function.id);
             break;
+          case ct_method:
+            printf("%s: <method> %s\n", tn, ast->data.call.function.id);
+            break;
         }
         print_ast(ast->data.call.callargs,indent+2);
         break;
@@ -503,6 +522,8 @@ void free_ast(ast_t* ast) {
           case ct_named:
             free(ast->data.call.function.id);
             break;
+          case ct_method:
+            free(ast->data.call.function.id);
         }
         free_ast(ast->data.call.callargs);
         break;

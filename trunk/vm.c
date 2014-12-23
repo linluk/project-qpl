@@ -57,6 +57,11 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
         error_id(NULL, fn);
       };
       break;
+    case ct_method:{
+      fn = "<method>";
+      // TODO : implementieren --> zuerst datentyp implementieren.
+      error_id(NULL, fn);
+    }
   }
   switch(func->type) {
     case at_function:
@@ -164,13 +169,29 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
       dec_ref(right);
       return result;
     }
-
+    case at_new:{
+      // TODO : implementieren.
+      ast_t* result;
+      ast_t* datadef;
+      env_t* dataenv;
+      datadef = eval_expression(env,ast->data.newop.datadef);
+      inc_ref(datadef);
+      dataenv = create_env();
+      dataenv->parent = env;
+      exec_statements(dataenv, datadef);
+      result = create_instance(dataenv);
+      result->ref_count = 0;
+      dec_ref(datadef);
+      return result;
+    }
     /* no need to evaluate */
     case at_integer:
     case at_bool:
     case at_double:
     case at_string:
     case at_function:
+    case at_instance:
+    case at_statements:
       return ast;
 
     /* invalid */
@@ -181,7 +202,6 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_elif:
     case at_if:
     case at_params:
-    case at_statements:
     case at_while:
     case at_builtin:
       error_expected(NULL,"expression",get_ast_type_name(ast->type));
@@ -304,6 +324,7 @@ void exec_assignment(env_t* env, ast_t* ast) {
     case at_double:
     case at_integer:
     case at_string:
+    case at_statements:
       right = ast->data.assignment.right;
       break;
     case at_identifier:

@@ -33,7 +33,6 @@
 /* own */
 #include "map.h"
 
-
 typedef enum ast_type_e {
   at_identifier,
   at_integer, at_double, at_string, at_bool,
@@ -46,7 +45,7 @@ typedef enum ast_type_e {
   at_while, at_dowhile,
   at_function, at_params,
   at_builtin,
-  at_datadef,  /* data definition */
+  at_new,
   at_instance  /* data instance */
 
   /* add values before this */
@@ -75,7 +74,7 @@ typedef struct position_s {
 /* THE abstract syntax tree structure */
 typedef struct ast_s {
   ast_type_t type;
-  int ref_count; /* positive value: ref_count -> call free when it becomes zero 
+  int ref_count; /* positive value: ref_count -> call free when it becomes zero
                     negative value: created by parser -> never call free */
   union { /* data */
     intmax_t i;
@@ -146,10 +145,9 @@ typedef struct ast_s {
         struct ast_s* (*builtin_3)(struct ast_s*, struct ast_s*, struct ast_s*);
       } function;
     } builtin;
-    struct { /* datatype definition */
-      size_t count;
-      struct ast_s** statements;
-    } datadef;
+    struct { /* new */
+      struct ast_s* datadef;
+    } newop; /* i use this uply name "newop" to be compatible with c++ compilers */
     struct { /* instance */
       struct env_s* self;
     } instance;
@@ -173,6 +171,8 @@ ast_t* create_while(ast_t* condition, ast_t* statements);
 ast_t* create_dowhile(ast_t* condition, ast_t* statements);
 ast_t* create_function(ast_t* params, ast_t* statements);
 ast_t* create_param(ast_t* params, char* id);
+ast_t* create_new(ast_t* datadef);
+ast_t* create_instance(struct env_s* self);
 ast_t* create_builtin_0(ast_t*(*builtin_0)());
 ast_t* create_builtin_1(ast_t*(*builtin_1)(ast_t*));
 ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*));

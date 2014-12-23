@@ -79,6 +79,7 @@ void lex_inc_line(void);
 "while"                                 { return T_WHILE; }
 "do"                                    { return T_DO; }
 "true"|"false"                          { lex_bool(yytext); return T_BOOL; }
+"new"                                   { return T_NEW; }
 [a-zA-Z_][a-zA-Z0-9_]*                  { lex_id(yytext); return T_ID; }
 @                                       { lex_id(yytext); return T_AT; }
 (0|[1-9][0-9]*)                         { lex_integer(yytext); return T_INTEGER; }

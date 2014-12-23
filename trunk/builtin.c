@@ -142,7 +142,7 @@ ast_t* builtin_to_integer(ast_t* ast) {
     case at_integer: num = create_integer(ast->data.i); break;
     case at_string:
       if(is_str_int(ast->data.s)) {
-        num = create_integer(strtoimax(ast->data.s,NULL,10)); 
+        num = create_integer(strtoimax(ast->data.s,NULL,10));
       } else {
         error_convert(NULL,get_ast_type_name(ast->type),get_ast_type_name(at_integer));
       }
@@ -174,8 +174,16 @@ ast_t* builtin_to_double(ast_t* ast) {
 }
 
 ast_t* builtin_to_bool(ast_t* ast) {
-// TODO
-  return NULL;
+  ast_t* bol;
+  bol = NULL;
+  switch(ast->type) {
+    case at_bool: bol = create_bool(ast->data.b); break;
+    case at_double: bol = create_bool(ast->data.d != 0.0); break;
+    case at_integer: bol = create_bool(ast->data.i != 0); break;
+    case at_string: bol = create_bool(strlen(ast->data.s) != 0); break;
+    default: error_convert(NULL, get_ast_type_name(ast->type),get_ast_type_name(at_bool));
+  }
+  bol->ref_count = 0;
+  return bol;
 }
-
 
