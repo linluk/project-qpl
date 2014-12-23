@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 
-/* need to create a stack trace on crash */
+/* needed to create a stack trace on crash */
 #include <execinfo.h>
 #include <signal.h>
 
@@ -80,7 +80,6 @@ int main(int argc, char** argv) {
   fclose(yyin);
 
   if(ast != NULL) {
-    
 //    printf("ast != NULL\n");
 
     env_t* env;

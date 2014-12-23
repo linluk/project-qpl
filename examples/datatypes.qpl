@@ -2,12 +2,12 @@
 /* you can define custom data types like this: */
 /* as soon as i've implemented them ;) */
 
-my_type: {
+my_type = {
   sval = "hi";
   get_str = @(){ @ = self.sval; };
   ival = 42;
   get_int = @(){ @ = self.ival; };
-  set_int = @(i){ @ self.ival = i; };
+  set_int = @(i){ self.ival = i; };
 }
 
 x = new(my_type);
