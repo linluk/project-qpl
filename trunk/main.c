@@ -37,6 +37,7 @@
 #include "utils.h"
 
 int yyparse(ast_t** ast_dest); /* get rid of implicit declaration warning */
+extern int yydebug;
 #include "lexer.h"
 #include "parser.h"
 
@@ -65,6 +66,8 @@ int main(int argc, char** argv) {
   } else {
     yyin = stdin;
   }
+
+//  yydebug = 1;
 
   /*** testing ***/
 //  yyin = fopen("example.qpl", "r");

@@ -3,6 +3,9 @@
 // maybe i should only allow named recursion!
   recursive anonymous functions.
 
+  DO I REALLY NEED (WANT TO HAVE) CUSTOM DATATYPES?
+  arent inhomogene lists and inhomogene maps enough?
+
  datatypes implementation. see examples/datatypes.qpl.
    extend parser function calls to recognise method calls.
    add the caller to the callargs (something like create_call($3,create_callargs($5, $1)); )

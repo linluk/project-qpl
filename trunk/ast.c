@@ -57,6 +57,8 @@ static const char* at_dowhile_str = "do-while";
 static const char* at_function_str = "function";
 static const char* at_params_str = "params";
 static const char* at_builtin_str = "builtin";
+static const char* at_instance_str = "instance";
+static const char* at_new_str = "new";
 static const char* at_unknown_str = "unknown";
 
 /* operator strings, these are returned by get_op_str() */
@@ -156,11 +158,15 @@ ast_t* create_statement(ast_t* statements, ast_t* statement) {
   return statements;
 }
 
-ast_t* create_call(char* id, ast_t* function, ast_t* callargs) {
+ast_t* create_call(char* id, ast_t* self, ast_t* function, ast_t* callargs) {
   ast_t* ast;
   ast = create_ast(at_call);
   if(id != NULL) {
-    ast->data.call.call_type = ct_named;
+    if(self != NULL) {
+      ast->data.call.call_type = ct_method;
+    } else {
+      ast->data.call.call_type = ct_named;
+    }
     ast->data.call.function.id = id;
   } else {
     if(function != NULL) {
@@ -176,6 +182,9 @@ ast_t* create_call(char* id, ast_t* function, ast_t* callargs) {
     callargs->data.callargs.count = 0;
     callargs->data.callargs.callargs = NULL;
   };
+  if(self != NULL) {  /* if call is a method call then i have to add self as !!the last argument!! */
+    callargs = create_callarg(callargs, self);
+  }
   ast->data.call.callargs = callargs;
   return ast;
 }
@@ -312,6 +321,14 @@ ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*)) {
   return ast;
 }
 
+ast_t* create_builtin_3(ast_t*(*builtin_3)(ast_t*,ast_t*,ast_t*)) {
+  ast_t* ast;
+  ast = create_ast(at_builtin);
+  ast->data.builtin.paramcount = 3;
+  ast->data.builtin.function.builtin_3 = builtin_3;
+  return ast;
+}
+
 void inc_ref(ast_t* ast) {
   if(ast->ref_count >= 0) {
     ast->ref_count++;
@@ -351,6 +368,8 @@ const char* get_ast_type_name(ast_type_t ast) {
     case at_string: return at_string_str;
     case at_while: return at_while_str;
     case at_builtin: return at_builtin_str;
+    case at_instance: return at_instance_str;
+    case at_new: return at_new_str;
     default: return at_unknown_str;
   }
 }
