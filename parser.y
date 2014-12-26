@@ -158,8 +158,9 @@ do_while_loop : T_DO block T_LPAREN expression T_RPAREN { $$ = create_dowhile($4
 block : T_LBRACKET statements T_RBRACKET { $$ = $2; }
       ;
 
-call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($1, NULL, $3); }
-     | function T_LPAREN callargs T_RPAREN { $$ = create_call(NULL, $1, $3); }
+call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($1, NULL, NULL, $3); }
+     | function T_LPAREN callargs T_RPAREN { $$ = create_call(NULL, NULL, $1, $3); }
+     | T_ID T_DOT T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($3, create_identifier($1), NULL, $5); }
      ;
 
 callargs : non_empty_callargs { $$ = $1; }
@@ -167,8 +168,8 @@ callargs : non_empty_callargs { $$ = $1; }
          ;
 
 non_empty_callargs : expression { $$ = create_callarg(NULL, $1); }
-                  | non_empty_callargs T_COMMA expression { $$ = create_callarg($1, $3); }
-                  ;
+                   | non_empty_callargs T_COMMA  expression { $$ = create_callarg($1, $3); }
+                   ;
 
 function : T_AT T_LPAREN params T_RPAREN block { $$ = create_function($3, $5); }
          ;

@@ -1,0 +1,16 @@
+
+
+getAddFunc = @(){
+  @ = @ (a,b) { @ = a + b; };
+};
+
+A = 2;
+B = 3;
+F = getAddFunc();
+R = getAddFunc()(A,B);
+if( R == getAddFunc()(B,A) ) {
+  println("it works");
+}else{
+  println("it sucks");
+}
+println("the result was" $ str(R));

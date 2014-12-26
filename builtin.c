@@ -51,6 +51,8 @@ void populate_env(env_t* env) {
   set_ast_to_id(env,"str",create_builtin_1(&builtin_to_string));
   set_ast_to_id(env,"int",create_builtin_1(&builtin_to_integer));
   set_ast_to_id(env,"dbl",create_builtin_1(&builtin_to_double));
+
+  set_ast_to_id(env,"str_replace",create_builtin_3(&builtin_str_replace));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -185,5 +187,25 @@ ast_t* builtin_to_bool(ast_t* ast) {
   }
   bol->ref_count = 0;
   return bol;
+}
+
+ast_t* builtin_str_replace(ast_t* str, ast_t* old, ast_t* new) {
+  ast_t* result;
+  ast_t* s;
+  ast_t* o;
+  ast_t* n;
+  result = NULL;
+  s = NULL;
+  o = NULL;
+  n = NULL;
+  s = builtin_to_string(str);
+  o = builtin_to_string(old);
+  n = builtin_to_string(new);
+  result = create_string(replace_str(s->data.s, o->data.s, n->data.s));
+  result->ref_count = 0;
+  dec_ref(s);
+  dec_ref(o);
+  dec_ref(n);
+  return result;
 }
 

@@ -162,7 +162,7 @@ ast_t* create_identifier(char* id);
 ast_t* create_expression(operator_t op, ast_t* left, ast_t* right);
 ast_t* create_assignment(char* id, ast_t* right);
 ast_t* create_statement(ast_t* statements, ast_t* statement);
-ast_t* create_call(char* id, ast_t* function, ast_t* callargs);
+ast_t* create_call(char* id, ast_t* self, ast_t* function, ast_t* callargs);
 ast_t* create_callarg(ast_t* callargs, ast_t* callarg);
 ast_t* create_conditional(ast_t* if_statement, ast_t* elif_statements, ast_t* else_statement);
 ast_t* create_if(ast_t* condition, ast_t* statements);
@@ -176,6 +176,7 @@ ast_t* create_instance(struct env_s* self);
 ast_t* create_builtin_0(ast_t*(*builtin_0)());
 ast_t* create_builtin_1(ast_t*(*builtin_1)(ast_t*));
 ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*));
+ast_t* create_builtin_3(ast_t*(*builtin_3)(ast_t*,ast_t*,ast_t*));
 const char* get_ast_type_name(ast_type_t ast);
 const char* get_op_str(operator_t op);
 

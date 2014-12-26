@@ -85,7 +85,7 @@ void lex_inc_line(void);
 (0|[1-9][0-9]*)                         { lex_integer(yytext); return T_INTEGER; }
 (0|[1-9][0-9]*)\.[0-9]+                 { lex_double(yytext); return T_DOUBLE; }
 \"[^\"\n]*\"                            { lex_string(yytext); return T_STRING; }
-"."                                     { return T_DOT; /* TODO: implement in parser, it is unused so far! */}
+"."                                     { return T_DOT; }
 "+"|"-"                                 { lex_operator(yytext); return T_ADDOP; }
 "*"|"/"|"%"                             { lex_operator(yytext); return T_MULOP; }
 ">"|"<"|">="|"<="|"=="|"!="             { lex_operator(yytext); return T_CMPOP; }
