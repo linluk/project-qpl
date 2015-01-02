@@ -48,7 +48,6 @@ void lex_operator(char* value);
 void lex_id(char* value);
 void lex_error(void);
 void lex_inc_line(void);
-
 %}
 
 
@@ -57,42 +56,42 @@ void lex_inc_line(void);
 %%
 
 
-"//".*                                  { /* skip */ }
-"/*"                                    { BEGIN(X_COMMENT); }
+"//".*                       { /* skip */ }
+"/*"                         { BEGIN(X_COMMENT); }
 <X_COMMENT>{
-"*/"                                    { BEGIN(INITIAL); }
-[^*\n]+                                 { /* skip */ }
-"*"                                     { /* skip */ }
-\n                                      { lex_inc_line(); }
+"*/"                         { BEGIN(INITIAL); }
+[^*\n]+                      { /* skip */ }
+"*"                          { /* skip */ }
+\n                           { lex_inc_line(); }
 }
-[ \t]                                   { /* skip white */ }
-\(                                      { return T_LPAREN; }
-\)                                      { return T_RPAREN; }
-\{                                      { return T_LBRACKET; }
-\}                                      { return T_RBRACKET; }
-\=                                      { return T_ASSIGN; }
-"\n"                                    { lex_inc_line(); }
-;                                       { return T_DELIMITER; }
-"if"                                    { return T_IF; }
-"elif"                                  { return T_ELIF; }
-"else"                                  { return T_ELSE; }
-"while"                                 { return T_WHILE; }
-"do"                                    { return T_DO; }
-"true"|"false"                          { lex_bool(yytext); return T_BOOL; }
-"new"                                   { return T_NEW; }
-[a-zA-Z_][a-zA-Z0-9_]*                  { lex_id(yytext); return T_ID; }
-@                                       { lex_id(yytext); return T_AT; }
-(0|[1-9][0-9]*)                         { lex_integer(yytext); return T_INTEGER; }
-(0|[1-9][0-9]*)\.[0-9]+                 { lex_double(yytext); return T_DOUBLE; }
-\"[^\"\n]*\"                            { lex_string(yytext); return T_STRING; }
-"."                                     { return T_DOT; }
-"+"|"-"                                 { lex_operator(yytext); return T_ADDOP; }
-"*"|"/"|"%"                             { lex_operator(yytext); return T_MULOP; }
-">"|"<"|">="|"<="|"=="|"!="             { lex_operator(yytext); return T_CMPOP; }
-"&"                                     { lex_operator(yytext); return T_ANDOP; }
-"|"                                     { lex_operator(yytext); return T_OROP; }
-"$"                                     { lex_operator(yytext); return T_STROP; }
-.                                       { lex_error(); }
+[ \t]                        { /* skip white */ }
+\(                           { return T_LPAREN; }
+\)                           { return T_RPAREN; }
+\{                           { return T_LBRACKET; }
+\}                           { return T_RBRACKET; }
+\=                           { return T_ASSIGN; }
+"\n"                         { lex_inc_line(); }
+;                            { return T_DELIMITER; }
+"if"                         { return T_IF; }
+"elif"                       { return T_ELIF; }
+"else"                       { return T_ELSE; }
+"while"                      { return T_WHILE; }
+"do"                         { return T_DO; }
+"true"|"false"               { lex_bool(yytext); return T_BOOL; }
+"new"                        { return T_NEW; }
+[a-zA-Z_][a-zA-Z0-9_]*       { lex_id(yytext); return T_ID; }
+@                            { lex_id(yytext); return T_AT; }
+(0|[1-9][0-9]*)              { lex_integer(yytext); return T_INTEGER; }
+(0|[1-9][0-9]*)\.[0-9]+      { lex_double(yytext); return T_DOUBLE; }
+\"[^\"\n]*\"                 { lex_string(yytext); return T_STRING; }
+"."                          { return T_DOT; }
+"+"|"-"                      { lex_operator(yytext); return T_ADDOP; }
+"*"|"/"|"%"                  { lex_operator(yytext); return T_MULOP; }
+">"|"<"|">="|"<="|"=="|"!="  { lex_operator(yytext); return T_CMPOP; }
+"&"                          { lex_operator(yytext); return T_ANDOP; }
+"|"                          { lex_operator(yytext); return T_OROP; }
+"$"                          { lex_operator(yytext); return T_STROP; }
+.                            { lex_error(); }
 
 %%
 
@@ -153,10 +152,10 @@ void lex_operator(char* value) {
     }else if(strcmp(value,"<=") == 0) {
       OP(op_le);
     } else {
-        position_t p;
-        p.file = NULL;
-        p.line = yylineno;
-        error_unexpected(&p,value);
+      position_t p;
+      p.file = NULL;
+      p.line = yylineno;
+      error_unexpected(&p,value);
     }
   }
 #undef OP
