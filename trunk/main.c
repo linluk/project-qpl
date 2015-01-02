@@ -19,7 +19,7 @@
  *
  * The name 'qpl' stands for Quick Programming Language and is a working
  * title.  It may changes in the future.
- *
+ *     
  * Source code can be found under: <https://code.google.com/p/project-qpl/>.
  *
  ****************************************************************************/
@@ -56,7 +56,7 @@ void sigsegv_handler(int sig) {
 
 int main(int argc, char** argv) {
   signal(SIGSEGV, sigsegv_handler);   // install our sigsegv_handler
-                                      // disable in production code
+  // disable in production code
 
   ast_t* ast;
   ast = NULL;
@@ -67,10 +67,10 @@ int main(int argc, char** argv) {
     yyin = stdin;
   }
 
-//  yydebug = 1;
+  //  yydebug = 1;
 
   /*** testing ***/
-//  yyin = fopen("example.qpl", "r");
+  //  yyin = fopen("example.qpl", "r");
 
   if(yyin == NULL) {
     printf("yyin == NULL\n");
@@ -78,12 +78,12 @@ int main(int argc, char** argv) {
 
   yyparse(&ast);
 
-//  print_ast(ast,0);
+  //  print_ast(ast,0);
 
   fclose(yyin);
 
   if(ast != NULL) {
-//    printf("ast != NULL\n");
+    //    printf("ast != NULL\n");
 
     env_t* env;
     env = create_env();
@@ -91,15 +91,15 @@ int main(int argc, char** argv) {
 
     vm_exec(env, ast);
 
-//    free_ast(ast); // free ast didnt work, because vm_exec() restructures the ast
-                     // therefor it could be that there are more than one pointers
-                     // pointing to the same memory. then when i free the ast
-                     // every pointer get freed --> double free memory --> ggrrrrr!
-                     //  WHAT IS MY SOLUTION ? ? ? ?
-                     //
-                     //  is this really the problem?? think about it again !!
-                     //  does vm_exec() really changes the ast?? that would be
-                     //  dangerous at all: think about a loop or a recursive function.
+    //    free_ast(ast); // free ast didnt work, because vm_exec() restructures the ast
+    // therefor it could be that there are more than one pointers
+    // pointing to the same memory. then when i free the ast
+    // every pointer get freed --> double free memory --> ggrrrrr!
+    //  WHAT IS MY SOLUTION ? ? ? ?
+    //
+    //  is this really the problem?? think about it again !!
+    //  does vm_exec() really changes the ast?? that would be
+    //  dangerous at all: think about a loop or a recursive function.
     free_env(env);
 
   } else {

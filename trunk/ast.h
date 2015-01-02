@@ -48,7 +48,7 @@ typedef enum ast_type_e {
   at_new,
   at_instance  /* data instance */
 
-  /* add values before this */
+    /* add values before this */
 } ast_type_t;
 
 typedef enum call_type_e {

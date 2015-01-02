@@ -63,7 +63,7 @@ void* iter_first(map_t* map);
 void* iter_next(map_t* map);
 
 /* if param != 0 -> call free() on every value 
- */
+*/
 void free_map(map_t* map, int free_values);
 
 #endif /* __MAP_H__ */

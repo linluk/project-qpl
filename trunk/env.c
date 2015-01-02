@@ -48,7 +48,7 @@ void free_env(env_t* env) {
   ast_t* tmp;
   if((tmp = iter_first(env->map)) != NULL) {
     do {
-//      dec_ref(tmp);
+      //      dec_ref(tmp);
     } while((tmp = iter_next(env->map)) != NULL);
   }
   free_map(env->map, 0);
