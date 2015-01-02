@@ -59,28 +59,16 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
         error_id(NULL, fn);
       };
       break;
-    case ct_method:{
-      fn = ast->data.call.function.id;
-      inst = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[ast->data.call.callargs->data.callargs.count - 1]);
-      if(inst->type != at_instance) {
-        error_expected(NULL, get_ast_type_name(at_instance), get_ast_type_name(inst->type));
-      }
-      func = get_ast_by_id(inst->data.instance.self, fn);
-      if(func == NULL) {
-        error_id(NULL, fn);
-      }
-      break;
-    }
   }
   switch(func->type) {
     case at_function:{
       env_t* inner;
       size_t i;
-      if(ast->data.call.callargs->data.callargs.count != func->data.function.params->data.params.count + (ast->data.call.call_type == ct_method ? 1 : 0)) {
-        error_paramcount(NULL, fn, func->data.function.params->data.params.count, ast->data.call.callargs->data.callargs.count - (ast->data.call.call_type == ct_method ? 1 : 0));
+      if(ast->data.call.callargs->data.callargs.count != func->data.function.params->data.params.count) {
+        error_paramcount(NULL, fn, func->data.function.params->data.params.count, ast->data.call.callargs->data.callargs.count);
       }
       inner = create_env();
-      inner->parent =  inst != NULL ? inst->data.instance.self : NULL;
+      inner->parent =  env;
       for(i = 0; i < func->data.function.params->data.params.count; i++) {
         set_ast_to_id(inner, func->data.function.params->data.params.params[i], eval_expression(env,ast->data.call.callargs->data.callargs.callargs[i]));
       }
@@ -131,6 +119,8 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
           break;
         }
         default:
+          printf("\n\n*** HINT TO DEVELOPER ***\nimplement builtincall in vm.c\n\n");
+          exit(1);
           /* if you create a builtin function with more parameters then you have to add a case here */
           break;
       }
@@ -178,6 +168,7 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
       dec_ref(right);
       return result;
     }
+    /* this doesn't exist anymore!
     case at_new:{
       // TODO : implementieren.
       ast_t* result;
@@ -192,14 +183,13 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
       result->ref_count = 0;
       dec_ref(datadef);
       return result;
-    }
+    }*/
     /* no need to evaluate */
     case at_integer:
     case at_bool:
     case at_double:
     case at_string:
     case at_function:
-    case at_instance:
     case at_statements:
       return ast;
 
@@ -339,7 +329,6 @@ void exec_assignment(env_t* env, ast_t* ast) {
     case at_identifier:
       right = get_ast_by_id(env, ast->data.assignment.right->data.id);
       break;
-    case at_new:
     case at_expression:
       right = eval_expression(env, ast->data.assignment.right);
       break;

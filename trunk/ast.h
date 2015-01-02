@@ -45,15 +45,11 @@ typedef enum ast_type_e {
   at_while, at_dowhile,
   at_function, at_params,
   at_builtin,
-  at_new,
-  at_instance  /* data instance */
-
     /* add values before this */
 } ast_type_t;
 
 typedef enum call_type_e {
   ct_named,    /* "normal" function call (f.e: str(), doSomething(), ...) */
-  ct_method,   /* method call (f.e: x.do(), abc.get_str(), ...) */
   ct_anonymous /* anonymous call (f.e:  fun(x){@=x*x;}(3), ...) */
 } call_type_t;
 
@@ -145,12 +141,6 @@ typedef struct ast_s {
         struct ast_s* (*builtin_3)(struct ast_s*, struct ast_s*, struct ast_s*);
       } function;
     } builtin;
-    struct { /* new */
-      struct ast_s* datadef;
-    } newop; /* i use this uply name "newop" to be compatible with c++ compilers */
-    struct { /* instance */
-      struct env_s* self;
-    } instance;
   } data;
 } ast_t;
 
@@ -162,7 +152,7 @@ ast_t* create_identifier(char* id);
 ast_t* create_expression(operator_t op, ast_t* left, ast_t* right);
 ast_t* create_assignment(char* id, ast_t* right);
 ast_t* create_statement(ast_t* statements, ast_t* statement);
-ast_t* create_call(char* id, ast_t* self, ast_t* function, ast_t* callargs);
+ast_t* create_call(char* id, ast_t* function, ast_t* callargs);
 ast_t* create_callarg(ast_t* callargs, ast_t* callarg);
 ast_t* create_conditional(ast_t* if_statement, ast_t* elif_statements, ast_t* else_statement);
 ast_t* create_if(ast_t* condition, ast_t* statements);
@@ -171,8 +161,6 @@ ast_t* create_while(ast_t* condition, ast_t* statements);
 ast_t* create_dowhile(ast_t* condition, ast_t* statements);
 ast_t* create_function(ast_t* params, ast_t* statements);
 ast_t* create_param(ast_t* params, char* id);
-ast_t* create_new(ast_t* datadef);
-ast_t* create_instance(struct env_s* self);
 ast_t* create_builtin_0(ast_t*(*builtin_0)());
 ast_t* create_builtin_1(ast_t*(*builtin_1)(ast_t*));
 ast_t* create_builtin_2(ast_t*(*builtin_2)(ast_t*,ast_t*));

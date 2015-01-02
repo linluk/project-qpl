@@ -43,7 +43,7 @@ ast_t* builtin_to_integer(ast_t* ast);
 ast_t* builtin_to_double(ast_t* ast);
 ast_t* builtin_to_bool(ast_t* ast);
 
-ast_t* builtin_str_replace(ast_t* str, ast_t* old, ast_t* new);
+ast_t* builtin_replace(ast_t* str, ast_t* old, ast_t* new);
 
 
 #endif /* __BUILTIN_H__ */
