@@ -1,2 +1,2 @@
 s1 = "hallo";
-println(s1,"ll","llihall");
+println(replace(s1,"ll","llihall"));

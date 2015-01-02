@@ -60,14 +60,14 @@
   */
 }
 
-%token T_LBRACKET T_RBRACKET T_LPAREN T_RPAREN T_ASSIGN T_AT T_WHILE T_DO T_COMMA T_DELIMITER T_DOT T_NEW
-%token<id> T_ID
+%token T_LBRACKET T_RBRACKET T_LPAREN T_RPAREN T_ASSIGN T_WHILE T_COMMA T_DELIMITER T_DO
+%token<id> T_ID T_AT
 %token<o> T_ADDOP T_MULOP T_CMPOP T_ANDOP T_OROP T_STROP T_IF T_ELIF T_ELSE
 %token<i> T_INTEGER
 %token<d> T_DOUBLE
 %token<s> T_STRING
 %token<b> T_BOOL
-%type<ast> statement statements assignment expression term factor conditional if_statement elif_statement elif_statements else_statement loop while_loop do_while_loop block call callargs non_empty_callargs function params non_empty_params newop
+%type<ast> statement statements assignment expression term factor conditional if_statement elif_statement elif_statements else_statement loop while_loop do_while_loop block call callargs non_empty_callargs function params non_empty_params
 %type<id> assignleft
 
 %start program
@@ -95,15 +95,10 @@ statement : assignment T_DELIMITER { $$ = $1; }
 
 assignment : assignleft T_ASSIGN expression { $$ = create_assignment($1, $3); }
            | assignleft T_ASSIGN function { $$ = create_assignment($1, $3); }
-           | assignleft T_ASSIGN block { $$ = create_assignment($1, $3); }
            ;
 
-newop : T_NEW T_LPAREN T_ID T_RPAREN { $$ = create_new( create_identifier($3) ); }
-      | T_NEW T_LPAREN block T_RPAREN { $$ = create_new($3); }
-      ;
-
 assignleft : T_ID { $$ = $1; }
-           | T_AT { $$ = strdup("@"); }
+           | T_AT { $$ = $1; }
            ;
 
 expression : term T_CMPOP expression { $$ = create_expression($2, $1, $3); }
@@ -111,7 +106,6 @@ expression : term T_CMPOP expression { $$ = create_expression($2, $1, $3); }
            | term T_OROP expression { $$ = create_expression($2, $1, $3); }
            | term T_ADDOP expression { $$ = create_expression($2, $1, $3); }
            | term { $$ = $1; }
-           | newop { $$ = $1; }
            ;
 
 term : term T_ANDOP factor { $$ = create_expression($2, $1, $3); }
@@ -158,9 +152,8 @@ do_while_loop : T_DO block T_LPAREN expression T_RPAREN { $$ = create_dowhile($4
 block : T_LBRACKET statements T_RBRACKET { $$ = $2; }
       ;
 
-call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($1, NULL, NULL, $3); }
-     | function T_LPAREN callargs T_RPAREN { $$ = create_call(NULL, NULL, $1, $3); }
-     | T_ID T_DOT T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($3, create_identifier($1), NULL, $5); }
+call : T_ID T_LPAREN callargs T_RPAREN { $$ = create_call($1, NULL, $3); }
+     | function T_LPAREN callargs T_RPAREN { $$ = create_call(NULL, $1, $3); }
      ;
 
 callargs : non_empty_callargs { $$ = $1; }

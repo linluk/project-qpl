@@ -52,7 +52,7 @@ void populate_env(env_t* env) {
   set_ast_to_id(env,"int",create_builtin_1(&builtin_to_integer));
   set_ast_to_id(env,"dbl",create_builtin_1(&builtin_to_double));
 
-  set_ast_to_id(env,"str_replace",create_builtin_3(&builtin_str_replace));
+  set_ast_to_id(env,"replace",create_builtin_3(&builtin_replace));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -189,7 +189,8 @@ ast_t* builtin_to_bool(ast_t* ast) {
   return bol;
 }
 
-ast_t* builtin_str_replace(ast_t* str, ast_t* old, ast_t* new) {
+ast_t* builtin_replace(ast_t* str, ast_t* old, ast_t* new) {
+  /* TODO : implement for lists too */
   ast_t* result;
   ast_t* s;
   ast_t* o;

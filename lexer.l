@@ -71,20 +71,19 @@ void lex_inc_line(void);
 \}                           { return T_RBRACKET; }
 \=                           { return T_ASSIGN; }
 "\n"                         { lex_inc_line(); }
-;                            { return T_DELIMITER; }
+";"                          { return T_DELIMITER; }
+","                          { return T_COMMA; }
 "if"                         { return T_IF; }
 "elif"                       { return T_ELIF; }
 "else"                       { return T_ELSE; }
 "while"                      { return T_WHILE; }
 "do"                         { return T_DO; }
 "true"|"false"               { lex_bool(yytext); return T_BOOL; }
-"new"                        { return T_NEW; }
 [a-zA-Z_][a-zA-Z0-9_]*       { lex_id(yytext); return T_ID; }
 @                            { lex_id(yytext); return T_AT; }
 (0|[1-9][0-9]*)              { lex_integer(yytext); return T_INTEGER; }
 (0|[1-9][0-9]*)\.[0-9]+      { lex_double(yytext); return T_DOUBLE; }
 \"[^\"\n]*\"                 { lex_string(yytext); return T_STRING; }
-"."                          { return T_DOT; }
 "+"|"-"                      { lex_operator(yytext); return T_ADDOP; }
 "*"|"/"|"%"                  { lex_operator(yytext); return T_MULOP; }
 ">"|"<"|">="|"<="|"=="|"!="  { lex_operator(yytext); return T_CMPOP; }

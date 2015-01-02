@@ -1,10 +1,10 @@
-add = @(a,b) {
+add = @(a , b) {
   @ = a + b;
 };
 
 p = @(fn,p1,p2,r) {
   println(str(fn) $ " ( " $ str(p1) $ " , "$ str(p2) $ " )  =  " $ str(r) $ " ;");
-}
+};
 
 x = 2;
 y = 3;

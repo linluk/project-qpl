@@ -57,8 +57,6 @@ static const char* at_dowhile_str = "do-while";
 static const char* at_function_str = "function";
 static const char* at_params_str = "params";
 static const char* at_builtin_str = "builtin";
-static const char* at_instance_str = "instance";
-static const char* at_new_str = "new";
 static const char* at_unknown_str = "unknown";
 
 /* operator strings, these are returned by get_op_str() */
@@ -158,15 +156,11 @@ ast_t* create_statement(ast_t* statements, ast_t* statement) {
   return statements;
 }
 
-ast_t* create_call(char* id, ast_t* self, ast_t* function, ast_t* callargs) {
+ast_t* create_call(char* id, ast_t* function, ast_t* callargs) {
   ast_t* ast;
   ast = create_ast(at_call);
   if(id != NULL) {
-    if(self != NULL) {
-      ast->data.call.call_type = ct_method;
-    } else {
-      ast->data.call.call_type = ct_named;
-    }
+    ast->data.call.call_type = ct_named;
     ast->data.call.function.id = id;
   } else {
     if(function != NULL) {
@@ -182,9 +176,6 @@ ast_t* create_call(char* id, ast_t* self, ast_t* function, ast_t* callargs) {
     callargs->data.callargs.count = 0;
     callargs->data.callargs.callargs = NULL;
   };
-  if(self != NULL) {  /* if call is a method call then i have to add self as !!the last argument!! */
-    callargs = create_callarg(callargs, self);
-  }
   ast->data.call.callargs = callargs;
   return ast;
 }
@@ -283,20 +274,6 @@ ast_t* create_param(ast_t* params, char* param) {
   return params;
 }
 
-ast_t* create_new(ast_t* datadef) {
-  ast_t* ast;
-  ast = create_ast(at_new);
-  ast->data.newop.datadef = datadef;
-  return ast;
-}
-
-ast_t* create_instance(struct env_s* self) {
-  ast_t* ast;
-  ast = create_ast(at_instance);
-  ast->data.instance.self = self;
-  return ast;
-}
-
 ast_t* create_builtin_0(ast_t*(*builtin_0)()) {
   ast_t* ast;
   ast = create_ast(at_builtin);
@@ -368,8 +345,6 @@ const char* get_ast_type_name(ast_type_t ast) {
     case at_string: return at_string_str;
     case at_while: return at_while_str;
     case at_builtin: return at_builtin_str;
-    case at_instance: return at_instance_str;
-    case at_new: return at_new_str;
     default: return at_unknown_str;
   }
 }
@@ -435,9 +410,6 @@ void print_ast(ast_t* ast, int indent){
           case ct_named:
             printf("%s: %s\n",tn, ast->data.call.function.id);
             break;
-          case ct_method:
-            printf("%s: <method> %s\n", tn, ast->data.call.function.id);
-            break;
         }
         print_ast(ast->data.call.callargs,indent+2);
         break;
@@ -498,10 +470,9 @@ void print_ast(ast_t* ast, int indent){
         }
         printf(")\n");
         break;
-      default:
-        fprintf(stderr,"warning: unknown ast type: %s:%d\n", tn, (int)ast->type);
-        exit(1);
-        break;
+        /* removed default -> i want to have a compiler warning 
+         * when i miss an enum value!
+         */
     }
   } else {
     printf("/* empty */\n");
@@ -541,8 +512,6 @@ void free_ast(ast_t* ast) {
           case ct_named:
             free(ast->data.call.function.id);
             break;
-          case ct_method:
-            free(ast->data.call.function.id);
         }
         free_ast(ast->data.call.callargs);
         break;
@@ -589,8 +558,7 @@ void free_ast(ast_t* ast) {
           free(ast->data.params.params[i]);
         }
         break;
-      default:
-        break;
+        /* removed default -> i want to have compilerwarnings! */
     }
     free(ast);
   }
