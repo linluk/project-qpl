@@ -1,5 +1,5 @@
 # 
-# Copyright (C) 2014 Lukas Singer
+# Copyright (C) 2014 - 2015 Lukas Singer
 #
 # This file is part of 'qpl'.
 #
@@ -29,7 +29,8 @@ CC=gcc
 CFLAGS=-g -rdynamic -Wall
 LFLAGS=-g -rdynamic
 BIN=qpl
-OBJ=parser.o lexer.o main.o ops.o env.o error.o vm.o ast.o utils.o map.o builtin.o
+OBJ=parser.o lexer.o main.o ops.o env.o error.o vm.o ast.o utils.o map.o \
+    builtin.o
 
 
 BIN: $(OBJ)
@@ -45,5 +46,5 @@ lexer.c: lexer.l
 	$(LEX) $<
 
 clean:
-	rm $(BIN) $(OBJ) lexer.c lexer.h parser.c parser.h
+	rm -f $(BIN) $(OBJ) lexer.c lexer.h parser.c parser.h parser.output
 

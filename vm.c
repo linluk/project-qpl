@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 Lukas Singer
+ * Copyright (C) 2014 - 2015 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -41,9 +41,7 @@
 ast_t* eval_call(env_t* env, ast_t* ast) {
   ast_t* func;
   ast_t* result;
-  ast_t* inst;
   char* fn;  /* function name */
-  inst = NULL;
   func = NULL;
   result = NULL;
   fn = NULL;
