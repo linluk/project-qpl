@@ -36,7 +36,7 @@ If you experience Problems building the Application please add an issue on
 QPL is under the GPLv3 license.  See the file <COPYING> for the full license.
 Every Source file contains a header like this:
  
-  Copyright (C) 2014 Lukas Singer
+  Copyright (C) 2014 - 2015 Lukas Singer
  
   This file is part of 'qpl'.
  
