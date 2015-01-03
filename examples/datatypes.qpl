@@ -5,36 +5,17 @@
 /* you can define custom data types like this: */
 /* as soon as i've implemented them ;) */
 
-/*
-my_type = {
-  sval = "hi";
-  get_str = @(){ @ = sval; };
-  ival = 42;
-  get_int = @(){ @ = ival; };
-  set_int = @(i){ ival = i; };
-};
-
-x = new(my_type);
-println("sval: " $ x.get_str() $ "; ival: " $ str(x.get_int()));
-
-x.set_int(23);
-println("ival is now: " $ str(x.get_int()));
-
-y = new(my_type);
-println("ival of a new instance is: " $ str(y.get_int()));
-*/
-
 my_dict = {
-  "sval", "hi";
-  "get_str", @(){ @ = sval; };
-  "ival", 42;
-  "get_int", @(){ @ = ival; };
-  "set_int", @(i){ ival = i; };
+  "sval": "hi";
+  "get_str": @(self){ @ = self["sval"]; };
+  "ival": 42;
+  "get_int": @(self){ @ = self["ival"]; };
+  "set_int": @(self,i){ self["ival"] = i; };
 };
 
-println("sval: " $ my_dict["get_str"]() $ "; ival: " $ str(my_dict["get_int"]()));
+println("sval: " $ my_dict["get_str"](my_dict) $ "; ival: " $ str(my_dict["get_int"](my_dict)));
 
-my_dict["set_int"](23);
-println("ival is now: " $ str(my_dict["get_int"]()));
+my_dict["set_int"](my_dict,23);
+println("ival is now: " $ str(my_dict["get_int"](my_dict)));
 
 

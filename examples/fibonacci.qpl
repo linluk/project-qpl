@@ -16,15 +16,12 @@ f = @(x) {
    *              f    + f      | if n >= 2
    *               n-1    n-2
    */
-  print("abc");
   if(x >= 2) {
     @ = f(x-1) + f(x-2);
   }else{
     @ = 1;
   }
 };
-
-println("test");
 
 /* call the function and print the result */
 println("fibonacci of " $ str(target) $ " is: " $ str(f(target)));
