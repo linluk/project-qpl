@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 Lukas Singer
+ * Copyright (C) 2014 - 2015 Lukas Singer
  *
  * This file is part of 'qpl'.
  *

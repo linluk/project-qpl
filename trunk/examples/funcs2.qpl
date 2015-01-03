@@ -1,4 +1,4 @@
-
+/* do i need this? or is it just complicated? */
 
 getAddFunc = @(){
   @ = @ (a,b) { @ = a + b; };
