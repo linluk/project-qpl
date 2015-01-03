@@ -93,8 +93,8 @@ void error_exit(char* emsg) {
 }
 
 int is_empty_item(key_value_t item) {
-//  return (item.key == NULL && item.hash == 0 && item.value == NULL);
-  return (item.key == NULL);
+  return (item.key == NULL && item.hash == 0 && item.value == NULL);
+//  return (item.key == NULL);
 }
 
 void rehash(map_t* map, size_t new_size) {
