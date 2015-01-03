@@ -1,16 +1,16 @@
 
 /* this demonstrates how i think about lists (at the moment) */
 
-my_list = [42, 23, "hi", 3.1415];
+my_list = [42, 23, "hi", 3.1415]; // is this how i want to have list literals??
 
 println("first element in list is: " $ str(my_list.first()));
 
 /* here are some examples */
-my_list.push(99);       /* adds 99 as last element */
-x = my_list.pop();      /* returns and removes the last element */
-x = my_list.get(2);     /* returns the 3rd element */
-my_list.set(2,"hello"); /* sets the third element to "hello" */
-my_list.del(1);         /* removes the 2nd element (this is going to be slow i think) */
+push(my_list,99);       /* adds 99 as last element */
+x = pop(my_list);       /* returns and removes the last element */
+x = get(my_list,2);     /* returns the 3rd element */
+set(my_list,2,"hello"); /* sets the third element to "hello" */
+del(my_list,1);         /* removes the 2nd element (this is going to be slow i think) */
 
 for(x, my_list) {  // you can use a for each loop. // is this the **BEST** syntax i can think about ??
   print(x);
