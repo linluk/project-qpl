@@ -178,7 +178,7 @@ ast_t* eval_eqneq(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2) {
       case at_string:
         result = create_bool(strcmp(ast1->data.s, ast2->data.s) == 0 ? 1 : 0);
         break;
-      default: 
+      default:
         error_apply(NULL,get_op_str(op_eq), get_ast_type_name(ast1->type), get_ast_type_name(ast2->type));
         break;
     }

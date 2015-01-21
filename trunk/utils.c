@@ -62,7 +62,7 @@ void free_null(void** p) {
   }
 }
 
-char is_str_int(const char* str) {
+char is_str_int(const char* str) {  
   if((str[0] == '-' || str[0] == '+') || (str[0] >= '0' && str[0] <= '9')) {
     size_t i;
     i = 1;
