@@ -1,0 +1,6 @@
+*.o
+lexer.c
+lexer.h
+parser.h
+parser.c
+qpl
