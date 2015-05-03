@@ -36,6 +36,7 @@
 typedef enum ast_type_e {
   at_identifier,
   at_integer, at_double, at_string, at_bool,
+  at_list,
   at_expression,
   at_assignment,
   at_call, at_callargs,
@@ -78,6 +79,10 @@ typedef struct ast_s {
     char b;
     char* s;
     char* id;
+    struct { /* list */
+      size_t count;
+      struct ast_s** elements;
+    } list;
     struct { /* expression */
       operator_t op;
       struct ast_s* left;
@@ -148,6 +153,7 @@ ast_t* create_integer(intmax_t value);
 ast_t* create_double(long double value);
 ast_t* create_bool(char value);
 ast_t* create_string(char* value);
+ast_t* create_list(ast_t* list, ast_t* element);
 ast_t* create_identifier(char* id);
 ast_t* create_expression(operator_t op, ast_t* left, ast_t* right);
 ast_t* create_assignment(char* id, ast_t* right);

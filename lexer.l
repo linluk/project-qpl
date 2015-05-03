@@ -69,10 +69,13 @@ void lex_inc_line(void);
 \)                           { return T_RPAREN; }
 \{                           { return T_LBRACKET; }
 \}                           { return T_RBRACKET; }
+"["                          { return T_LSQBRACKET; }
+"]"                          { return T_RSQBRACKET; }
 \=                           { return T_ASSIGN; }
 "\n"                         { lex_inc_line(); }
 ";"                          { return T_DELIMITER; }
 ","                          { return T_COMMA; }
+":"                          { return T_COLON; }
 "if"                         { return T_IF; }
 "elif"                       { return T_ELIF; }
 "else"                       { return T_ELSE; }
@@ -121,7 +124,8 @@ void lex_bool(char* value) {
 
 void lex_operator(char* value) {
 #define OP(x)  {yylval.o = (x);}
-#define OPB(x) {yylval.o = (x); break;}
+//#define OPB(x) {yylval.o = (x); break;}
+#define OPB(x) {OP(x); break;}
   if(strlen(value) == 1) {
     switch(value[0]) {
       case '+': OPB(op_add);

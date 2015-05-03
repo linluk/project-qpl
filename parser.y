@@ -60,14 +60,14 @@
   */
 }
 
-%token T_LBRACKET T_RBRACKET T_LPAREN T_RPAREN T_ASSIGN T_WHILE T_COMMA T_DELIMITER T_DO
+%token T_LBRACKET T_RBRACKET T_LPAREN T_RPAREN T_LSQBRACKET T_RSQBRACKET T_COLON T_ASSIGN T_WHILE T_COMMA T_DELIMITER T_DO
 %token<id> T_ID T_AT
 %token<o> T_ADDOP T_MULOP T_CMPOP T_ANDOP T_OROP T_STROP T_IF T_ELIF T_ELSE
 %token<i> T_INTEGER
 %token<d> T_DOUBLE
 %token<s> T_STRING
 %token<b> T_BOOL
-%type<ast> statement statements assignment expression term factor conditional if_statement elif_statement elif_statements else_statement loop while_loop do_while_loop block call callargs non_empty_callargs function params non_empty_params
+%type<ast> statement statements assignment expression term factor conditional if_statement elif_statement elif_statements else_statement loop while_loop do_while_loop block call callargs non_empty_callargs function params non_empty_params list list_values
 %type<id> assignleft
 
 %start program
@@ -106,6 +106,7 @@ expression : term T_CMPOP expression { $$ = create_expression($2, $1, $3); }
            | term T_OROP expression { $$ = create_expression($2, $1, $3); }
            | term T_ADDOP expression { $$ = create_expression($2, $1, $3); }
            | term { $$ = $1; }
+           | list { $$ = $1; }
            ;
 
 term : term T_ANDOP factor { $$ = create_expression($2, $1, $3); }
@@ -148,6 +149,14 @@ while_loop : T_WHILE T_LPAREN expression T_RPAREN block { $$ = create_while($3, 
 
 do_while_loop : T_DO block T_LPAREN expression T_RPAREN { $$ = create_dowhile($4, $2); }
               ;
+
+list : T_LSQBRACKET list_values T_RSQBRACKET { $$ = $2; }
+     | T_LSQBRACKET T_RSQBRACKET { $$ = NULL; }
+     ;
+
+list_values : expression { $$ = create_list(NULL, $1); }
+            | list_values T_COMMA expression { $$ = create_list($1, $3); }
+            ;
 
 block : T_LBRACKET statements T_RBRACKET { $$ = $2; }
       ;

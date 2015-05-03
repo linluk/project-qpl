@@ -117,6 +117,24 @@ ast_t* create_string(char* value) {
   return ast;
 }
 
+ast_t* create_list(ast_t* list, ast_t* element) {
+  if(list == NULL) {
+    list = create_ast(at_list);
+    list->data.list.count = 0;
+    list->data.list.elements = NULL;
+  }
+  if(list->type != at_list) {
+    fprintf(stderr, "ast generation error\n");
+    exit(1);
+  }
+  if(element != NULL) {
+    list->data.list.count++;
+    list->data.list.elements = (ast_t**)check_realloc(list->data.list.elements, list->data.list.count * sizeof(ast_t*));
+    list->data.list.elements[list->data.list.count - 1] = element;
+  }
+  return list;
+}
+
 ast_t* create_identifier(char* id) {
   ast_t* ast;
   ast = create_ast(at_identifier);
