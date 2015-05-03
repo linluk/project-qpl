@@ -1,4 +1,4 @@
-# 
+#
 # Copyright (C) 2014 - 2015 Lukas Singer
 #
 # This file is part of 'qpl'.
@@ -19,7 +19,7 @@
 # The name 'qpl' stands for Quick Programming Language and is a working
 # title.  It may changes in the future.
 #
-# Source code can be found under: <https://code.google.com/p/project-qpl/>.
+# Source code can be found under: <https://github.com/linluk/project-qpl/>.
 #
 
 LEX=flex

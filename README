@@ -21,13 +21,13 @@ Use the Makefile to build it. You Dont need to configure anything, just call
 'make'. If succeeded its done.
 You need to have gcc, bison and flex installed on your system to build QPL.
 It compiles fine with these Versions:
-  gcc 4.7.2 (Debian(4.7.2-5)
-  bison 2.5
-  flex 2.5.35
-  glibc 2.13
-On Debian GNU/Linux 7.7 (wheezy) 3.2.0-4-amd64.
+  gcc (Debian 4.9.2-10)
+  bison 3.0.2
+  flex 2.5.39
+  glibc 2.19
+On Debian GNU/Linux 8 (jessie) 3.16.0-4-amd64.
 If you experience Problems building the Application please add an issue on
-<http://code.google.com/p/project-qpl/>.
+<https://github.com/linluk/project-qpl/>.
 
 
 ==============================================================================
@@ -35,48 +35,45 @@ If you experience Problems building the Application please add an issue on
 ==============================================================================
 QPL is under the GPLv3 license.  See the file <COPYING> for the full license.
 Every Source file contains a header like this:
- 
+
   Copyright (C) 2014 - 2015 Lukas Singer
- 
+
   This file is part of 'qpl'.
- 
+
   'qpl' is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
- 
+
   'qpl' is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
- 
+
   You should have received a copy of the GNU General Public License
   along with 'qpl'.  If not, see <http://www.gnu.org/licenses/>.
- 
+
   The name 'qpl' stands for Quick Programming Language and is a working
   title.  It may changes in the future.
- 
-  Source code can be found under: <https://code.google.com/p/project-qpl/>.
- 
+
+  Source code can be found under: <https://github.com/linluk/project-qpl/>.
+
 If it is missing feel free to add it or treat it like it would be there.
 
 
 ==============================================================================
 ** Source Code: **
 ==============================================================================
-Full Source Code can be found under: <https://code.google.com/p/project-qpl/>.
-Currently it uses SVN (Subversion).
-You need to have Subversion installed on your system to check out a copy of
-the source code.
-Use this command to get the latest sources:
-'$ svn  checkout  http://project-qpl.googlecode.com/svn/trunk/  qpl'
- 
+Full Source Code can be found under: <https://github.com/linluk/project-qpl/>.
+We switched from svn to git due to google-code shutdown.
+Use 'git clone https://github.com/linluk/project-qpl qpl' to obtain a copy.
+
 
 ==============================================================================
 ** Contact: **
 ==============================================================================
 You can contact me by email under <lukas42singer (at) gmail (dot) com>.
-I speak german and (bad) english, both are fine.
+I speak german and english, both are fine.
 
 
 ==============================================================================
@@ -84,6 +81,6 @@ I speak german and (bad) english, both are fine.
 ==============================================================================
 If you are interested in helping me with development then join the mailing
 list (I will add one "soon"; just after finishing my exams and finishing the
-final year project (hopefully in the middle of 2015)).
+final year project (hopefully in the end of 2015)).
 
 
