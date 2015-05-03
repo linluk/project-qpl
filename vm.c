@@ -20,7 +20,7 @@
  * The name 'qpl' stands for Quick Programming Language and is a working
  * title.  It may changes in the future.
  *
- * Source code can be found under: <https://code.google.com/p/project-qpl/>.
+ * Source code can be found under: <https://github.com/linluk/project-qpl/>.
  *
  ****************************************************************************/
 
@@ -189,6 +189,7 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_string:
     case at_function:
     case at_statements:
+    case at_list:
       return ast;
 
     /* invalid */

@@ -20,7 +20,7 @@
  * The name 'qpl' stands for Quick Programming Language and is a working
  * title.  It may changes in the future.
  *
- * Source code can be found under: <https://code.google.com/p/project-qpl/>.
+ * Source code can be found under: <https://github.com/linluk/project-qpl>.
  *
  ****************************************************************************/
 
@@ -44,6 +44,7 @@ static const char* at_integer_str = "integer";
 static const char* at_double_str = "double";
 static const char* at_string_str = "string";
 static const char* at_bool_str = "bool";
+static const char* at_list_str = "list";
 static const char* at_expression_str = "expression";
 static const char* at_assignment_str = "assignment";
 static const char* at_call_str = "call";
@@ -363,8 +364,9 @@ const char* get_ast_type_name(ast_type_t ast) {
     case at_string: return at_string_str;
     case at_while: return at_while_str;
     case at_builtin: return at_builtin_str;
-    default: return at_unknown_str;
+    case at_list: return at_list_str;
   }
+  return at_unknown_str;
 }
 
 const char* get_op_str(operator_t op) {
@@ -383,8 +385,8 @@ const char* get_op_str(operator_t op) {
     case op_and: return op_and_str;
     case op_or: return op_or_str;
     case op_cat: return op_cat_str;
-    default: return op_unknown_str;
   }
+  return op_unknown_str;
 }
 
 void print_ast(ast_t* ast, int indent){
@@ -409,6 +411,12 @@ void print_ast(ast_t* ast, int indent){
         break;
       case at_bool:
         printf("%s: %s\n",tn,ast->data.b > 0 ? "true" : "false");
+        break;
+      case at_list:
+        printf("%s: %zu\n",tn,ast->data.list.count);
+        for(i = 0; i < ast->data.list.count; i++) {
+          print_ast(ast->data.list.elements[i], indent + 2);
+        }
         break;
       case at_expression:
         printf("%s: %s\n",tn,get_op_str(ast->data.expression.op));
@@ -488,9 +496,7 @@ void print_ast(ast_t* ast, int indent){
         }
         printf(")\n");
         break;
-        /* removed default -> i want to have a compiler warning 
-         * when i miss an enum value!
-         */
+      /* removed default -> i want to have a compiler warning  when i miss an enum value! */
     }
   } else {
     printf("/* empty */\n");
@@ -532,6 +538,12 @@ void free_ast(ast_t* ast) {
             break;
         }
         free_ast(ast->data.call.callargs);
+        break;
+      case at_list:
+        for(i = 0; i < ast->data.list.count; i++) {
+          free_ast(ast->data.list.elements[i]);
+        }
+        free(ast->data.list.elements);
         break;
       case at_callargs:
         for(i = 0; i < ast->data.callargs.count; i++) {
