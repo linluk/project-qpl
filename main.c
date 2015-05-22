@@ -19,7 +19,7 @@
  *
  * The name 'qpl' stands for Quick Programming Language and is a working
  * title.  It may changes in the future.
- *     
+ *
  * Source code can be found under: <https://github.com/linluk/project-qpl/>.
  *
  ****************************************************************************/
@@ -58,8 +58,7 @@ int main(int argc, char** argv) {
   signal(SIGSEGV, sigsegv_handler);   // install our sigsegv_handler
   // disable in production code
 
-  ast_t* ast;
-  ast = NULL;
+  ast_t* ast = NULL;
 
   if(argc > 1) {
     yyin = fopen(argv[1], "r");
@@ -68,9 +67,6 @@ int main(int argc, char** argv) {
   }
 
   //    yydebug = 1;
-
-  /*** testing ***/
-  //  yyin = fopen("example.qpl", "r");
 
   if(yyin == NULL) {
     printf("yyin == NULL\n");
@@ -83,10 +79,8 @@ int main(int argc, char** argv) {
   fclose(yyin);
 
   if(ast != NULL) {
-    //    printf("ast != NULL\n");
 
-    env_t* env;
-    env = create_env();
+    env_t* env = create_env();
     populate_env(env);
 
     vm_exec(env, ast);

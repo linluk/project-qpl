@@ -31,6 +31,8 @@
 /* own */
 #include "ast.h"
 
+#define ERROR_BUFFER_LENGTH (255)
+
 /* prototypes */
 void error(position_t* pos, const char* emsg);
 
@@ -50,52 +52,61 @@ void error(position_t* pos, const char* emsg) {
 
 /* prototypes in "error.h" */
 void error_expected(position_t* pos, const char* expected, const char* received) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"expected: \"%s\", received: \"%s\"", expected, received);
   error(pos,buf);
 }
 
 void error_unexpected(position_t* pos, const char* unexpected) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"unexpected \"%s\"", unexpected);
   error(pos,buf);
 }
 
 void error_assign(position_t* pos, const char* from, const char* to) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"cannot assign \"%s\" to \"%s\"", from, to);
   error(pos,buf);
 }
 
 void error_apply(position_t* pos, const char* op, const char* arg1, const char* arg2) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"cannot apply \"%s\" to \"%s\" and \"%s\"", op, arg1, arg2);
   error(pos,buf);
 }
 
 void error_id(position_t* pos, const char* id) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"identifier \"%s\" not found", id);
   error(pos,buf);
 }
 
 void error_paramcount(position_t* pos, const char* func, int paramcount, int callargcount) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"function \"%s\" expects %d arguments, called with %d", func, paramcount, callargcount);
   error(pos,buf);
 }
 
 void error_unsupported(position_t* pos, const char* unsupported) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"unsupported feature: \"%s\"",unsupported);
   error(pos,buf);
 }
 
 void error_convert(position_t* pos, const char* from, const char* to) {
-  char buf[250];
+  char buf[ERROR_BUFFER_LENGTH];
   sprintf(buf,"cannot convert \"%s\" into \"%s\"",from,to);
   error(pos,buf);
 }
 
+void error_astgen(position_t* pos, const char* err) {
+  char buf[ERROR_BUFFER_LENGTH];
+  if (err != NULL) {
+    sprintf(buf,"AST create error: \"%s\"", err);
+  } else {
+    sprintf(buf,"AST create error");
+  }
+  error(pos, buf);
+}
 
 

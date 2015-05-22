@@ -55,8 +55,7 @@ ast_t* eval_eqneq(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2);
 
 /* prototypes in "ops.c" */
 ast_t* eval_math(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2,long double (math_func)(long double,long double)) {
-  ast_t* result;
-  result = NULL;
+  ast_t* result = NULL;
   switch(ast1->type) {
     case at_integer:
       switch(ast2->type) {
@@ -109,8 +108,7 @@ long double __div_func(long double d1, long double d2) {
 }
 
 ast_t* eval_gtlt(env_t* env, operator_t op, ast_t* ast1, ast_t* ast2, char (comp_func)(long double,long double)) {
-  ast_t* result;
-  result = NULL;
+  ast_t* result = NULL;
   switch(ast1->type) {
     case at_integer:
       switch(ast2->type) {
@@ -211,8 +209,7 @@ ast_t* eval_div(env_t* env, ast_t* ast1, ast_t* ast2) {
 }
 
 ast_t* eval_mod(env_t* env, ast_t* ast1, ast_t* ast2) {
-  ast_t* result;
-  result = NULL;
+  ast_t* result = NULL;
   if(ast1->type == at_integer && ast2->type == at_integer) {
     result = create_integer(ast1->data.i % ast2->data.i);
   } else {
@@ -223,8 +220,7 @@ ast_t* eval_mod(env_t* env, ast_t* ast1, ast_t* ast2) {
 
 /* logical ops */
 ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
-  ast_t* result;
-  result = NULL;
+  ast_t* result = NULL;
   if(ast1->type == at_bool && ast2->type == at_bool) {
     result = create_bool(ast1->data.b && ast2->data.b);
   } else {
@@ -234,8 +230,7 @@ ast_t* eval_and(env_t* env, ast_t* ast1, ast_t* ast2) {
 }
 
 ast_t* eval_or(env_t* env, ast_t* ast1, ast_t* ast2) {
-  ast_t* result;
-  result = NULL;
+  ast_t* result = NULL;
   if(ast1->type == at_bool && ast2->type == at_bool) {
     result = create_bool(ast1->data.b || ast2->data.b);
   } else {
@@ -271,8 +266,7 @@ ast_t* eval_neq(env_t* env, ast_t* ast1, ast_t* ast2) {
 
 /* string ops */
 ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2) {
-  ast_t* result;
-  result = NULL;
+  ast_t* result = NULL;
   if(ast1->type == at_string && ast2->type == at_string) {
     result = create_string(NULL);
     result->data.s = (char*)check_malloc((strlen(ast1->data.s) + strlen(ast2->data.s) + 1) * sizeof(char));

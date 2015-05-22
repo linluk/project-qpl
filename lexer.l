@@ -36,9 +36,11 @@
 
 /* own */
 #include "ast.h"
-#include "parser.h"
 #include "utils.h"
 #include "error.h"
+
+/* created by 'bison' */
+#include "parser.h"
 
 void lex_integer(char* value);
 void lex_double(char* value);
@@ -124,7 +126,6 @@ void lex_bool(char* value) {
 
 void lex_operator(char* value) {
 #define OP(x)  {yylval.o = (x);}
-//#define OPB(x) {yylval.o = (x); break;}
 #define OPB(x) {OP(x); break;}
   if(strlen(value) == 1) {
     switch(value[0]) {

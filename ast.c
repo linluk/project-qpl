@@ -80,7 +80,7 @@ static const char* op_unknown_str = "unknown";
 /* prototypes */
 ast_t* create_ast(ast_type_t type);
 
-/* prototypes in "astgen.c" */
+/* prototypes in "ast.c" */
 ast_t* create_ast(ast_type_t type) {
   ast_t* ast;
   ast = check_malloc(sizeof(ast_t));
@@ -89,7 +89,7 @@ ast_t* create_ast(ast_type_t type) {
   return ast;
 }
 
-/* prototypes in "astgen.h" */
+/* prototypes in "ast.h" */
 ast_t* create_integer(intmax_t value) {
   ast_t* ast;
   ast = create_ast(at_integer);
@@ -130,7 +130,10 @@ ast_t* create_list(ast_t* list, ast_t* element) {
   }
   if(element != NULL) {
     list->data.list.count++;
-    list->data.list.elements = (ast_t**)check_realloc(list->data.list.elements, list->data.list.count * sizeof(ast_t*));
+    list->data.list.elements = (ast_t**)check_realloc(
+        list->data.list.elements, 
+        list->data.list.count * sizeof(ast_t*)
+    );
     list->data.list.elements[list->data.list.count - 1] = element;
   }
   return list;
@@ -166,11 +169,13 @@ ast_t* create_statement(ast_t* statements, ast_t* statement) {
     statements->data.statements.statements = NULL;
   }
   if(statements->type != at_statements) {
-    fprintf(stderr, "ast generation error\n");
-    exit(1);
+    error_astgen(NULL,"statement");
   }
   statements->data.statements.count++;
-  statements->data.statements.statements = (ast_t**)check_realloc(statements->data.statements.statements, statements->data.statements.count * sizeof(ast_t*));
+  statements->data.statements.statements = (ast_t**)check_realloc(
+      statements->data.statements.statements,
+      statements->data.statements.count * sizeof(ast_t*)
+  );
   statements->data.statements.statements[statements->data.statements.count - 1] = statement;
   return statements;
 }
@@ -186,8 +191,7 @@ ast_t* create_call(char* id, ast_t* function, ast_t* callargs) {
       ast->data.call.call_type = ct_anonymous;
       ast->data.call.function.function = function;
     } else {
-      fprintf(stderr, "ast generation error\n");
-      exit(1);
+      error_astgen(NULL,"call");
     }
   }
   if(callargs == NULL) {
@@ -206,11 +210,13 @@ ast_t* create_callarg(ast_t* callargs, ast_t* callarg) {
     callargs->data.callargs.callargs = NULL;
   }
   if(callargs->type != at_callargs) {
-    fprintf(stderr, "ast generation error\n");
-    exit(1);
+    error_astgen(NULL,"callargs");
   }
   callargs->data.callargs.count++;
-  callargs->data.callargs.callargs = (ast_t**)check_realloc(callargs->data.callargs.callargs, callargs->data.callargs.count * sizeof(ast_t*));
+  callargs->data.callargs.callargs = (ast_t**)check_realloc(
+      callargs->data.callargs.callargs,
+      callargs->data.callargs.count * sizeof(ast_t*)
+  );
   callargs->data.callargs.callargs[callargs->data.callargs.count - 1] = callarg;
   return callargs;
 }
@@ -239,11 +245,13 @@ ast_t* create_elif(ast_t* elif_statements, ast_t* elif_statement) {
     elif_statements->data.elif_statements.elif_statements = NULL;
   }
   if(elif_statements->type != at_elif) {
-    fprintf(stderr, "ast generation error\n");
-    exit(1);
+    error_astgen(NULL,"elif");
   }
   elif_statements->data.elif_statements.count++;
-  elif_statements->data.elif_statements.elif_statements = (ast_t**)check_realloc(elif_statements->data.elif_statements.elif_statements, elif_statements->data.elif_statements.count * sizeof(ast_t*));
+  elif_statements->data.elif_statements.elif_statements = (ast_t**)check_realloc(
+      elif_statements->data.elif_statements.elif_statements,
+      elif_statements->data.elif_statements.count * sizeof(ast_t*)
+  );
   elif_statements->data.elif_statements.elif_statements[elif_statements->data.elif_statements.count - 1] = elif_statement;
   return elif_statements;
 }
@@ -284,11 +292,13 @@ ast_t* create_param(ast_t* params, char* param) {
     params->data.params.params = NULL;
   }
   if(params->type != at_params) {
-    fprintf(stderr, "ast generation error\n");
-    exit(1);
+    error_astgen(NULL,"param");
   }
   params->data.params.count++;
-  params->data.params.params = (char**)check_realloc(params->data.params.params, params->data.params.count * sizeof(char*));
+  params->data.params.params = (char**)check_realloc(
+      params->data.params.params,
+      params->data.params.count * sizeof(char*)
+  );
   params->data.params.params[params->data.params.count - 1] = param;
   return params;
 }
@@ -496,7 +506,7 @@ void print_ast(ast_t* ast, int indent){
         }
         printf(")\n");
         break;
-      /* removed default -> i want to have a compiler warning  when i miss an enum value! */
+      /* removed default -> i want to have a compilerwarnings! */
     }
   } else {
     printf("/* empty */\n");

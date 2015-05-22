@@ -37,6 +37,7 @@
 /* own */
 #include "ast.h"
 
+/* created by 'flex' */
 #include "lexer.h"
 
 #define YYDEBUG (1)

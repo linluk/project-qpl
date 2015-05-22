@@ -39,12 +39,9 @@
 #include "vm.h"
 
 ast_t* eval_call(env_t* env, ast_t* ast) {
-  ast_t* func;
-  ast_t* result;
-  char* fn;  /* function name */
-  func = NULL;
-  result = NULL;
-  fn = NULL;
+  ast_t* func = NULL;
+  ast_t* result = NULL;
+  char* fn = NULL;  /* function name */
   switch(ast->data.call.call_type) {
     case ct_anonymous:
       fn = "<anonymous>";
@@ -60,15 +57,18 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
   }
   switch(func->type) {
     case at_function:{
-      env_t* inner;
       size_t i;
       if(ast->data.call.callargs->data.callargs.count != func->data.function.params->data.params.count) {
         error_paramcount(NULL, fn, func->data.function.params->data.params.count, ast->data.call.callargs->data.callargs.count);
       }
-      inner = create_env();
+      env_t* inner = create_env();
       inner->parent =  env;
       for(i = 0; i < func->data.function.params->data.params.count; i++) {
-        set_ast_to_id(inner, func->data.function.params->data.params.params[i], eval_expression(env,ast->data.call.callargs->data.callargs.callargs[i]));
+        set_ast_to_id(
+            inner,
+            func->data.function.params->data.params.params[i],
+            eval_expression(env,ast->data.call.callargs->data.callargs.callargs[i])
+        );
       }
       /* execute the function */
       exec_statements(inner, func->data.function.statements);
@@ -87,29 +87,23 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
           result = func->data.builtin.function.builtin_0();
           break;
         case 1: {
-          ast_t* p;
-          p = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]);
+          ast_t* p = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]);
           result = func->data.builtin.function.builtin_1(p);
           dec_ref(p);
           break;
         }
         case 2: {
-          ast_t* p1;
-          ast_t* p2;
-          p1 = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]);
-          p2 = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[1]);
+          ast_t* p1 = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[0]);
+          ast_t* p2 = eval_expression(env,ast->data.call.callargs->data.callargs.callargs[1]);
           result = func->data.builtin.function.builtin_2(p1,p2);
           dec_ref(p1);
           dec_ref(p2);
           break;
         }
         case 3: {
-          ast_t* p1;
-          ast_t* p2;
-          ast_t* p3;
-          p1 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[0]);
-          p2 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[1]);
-          p3 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[2]);
+          ast_t* p1 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[0]);
+          ast_t* p2 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[1]);
+          ast_t* p3 = eval_expression(env, ast->data.call.callargs->data.callargs.callargs[2]);
           result = func->data.builtin.function.builtin_3(p1,p2,p3);
           dec_ref(p1);
           dec_ref(p2);
@@ -127,7 +121,6 @@ ast_t* eval_call(env_t* env, ast_t* ast) {
       error_expected(NULL, get_ast_type_name(at_function), get_ast_type_name(func->type));
       break;
   }
-
   return result;
 }
 
@@ -137,12 +130,9 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
     case at_call: return eval_call(env,ast);
     case at_identifier: return get_ast_by_id(env, ast->data.id);
     case at_expression: {
-      ast_t* result;
-      ast_t* left;
-      ast_t* right;
-      result = NULL;
-      left = eval_expression(env, ast->data.expression.left);
-      right = eval_expression(env, ast->data.expression.right);
+      ast_t* result = NULL;
+      ast_t* left = eval_expression(env, ast->data.expression.left);
+      ast_t* right = eval_expression(env, ast->data.expression.right);
       inc_ref(left);
       inc_ref(right);
       switch(ast->data.expression.op) {
@@ -208,11 +198,9 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
 }
 
 int exec_if(env_t* env, ast_t* ast) {
-  ast_t* cond;
-  int result; /* not null when condition was true,
-                 null when condition was false */
-  result = 0;
-  cond = eval_expression(env, ast->data.if_statement.condition);
+  int result = 0; /* not null when condition was true,
+                     null when condition was false */
+  ast_t* cond = eval_expression(env, ast->data.if_statement.condition);
   if(cond->type != at_bool) {
     error_expected(NULL,get_ast_type_name(at_bool),get_ast_type_name(cond->type));
   } else {
@@ -247,8 +235,7 @@ void exec_conditional(env_t* env, ast_t* ast) {
 }
 
 void exec_while(env_t* env, ast_t* ast) {
-  ast_t* cond;
-  cond = eval_expression(env, ast->data.while_statement.condition);
+  ast_t* cond = eval_expression(env, ast->data.while_statement.condition);
   if(cond->type != at_bool) {
     error_expected(NULL,get_ast_type_name(at_bool),get_ast_type_name(cond->type));
   } else {
@@ -263,9 +250,8 @@ void exec_while(env_t* env, ast_t* ast) {
 
 void exec_dowhile(env_t* env, ast_t* ast) {
   /* same as exec_while() but with a call of exec_statements() before. */
-  ast_t* cond;
   exec_statements(env, ast->data.while_statement.statements);
-  cond = eval_expression(env, ast->data.while_statement.condition);
+  ast_t* cond = eval_expression(env, ast->data.while_statement.condition);
   if(cond->type != at_bool) {
     error_expected(NULL,get_ast_type_name(at_bool),get_ast_type_name(cond->type));
   } else {
@@ -286,8 +272,7 @@ void exec_statements(env_t* env, ast_t* ast) {
         exec_assignment(env, ast->data.statements.statements[i]);
         break;
       case at_call: {
-        ast_t* tmp;
-        tmp = eval_call(env, ast->data.statements.statements[i]);
+        ast_t* tmp = eval_call(env, ast->data.statements.statements[i]);
         if(tmp != NULL) {
           if(tmp->ref_count == 0) {
             free_ast(tmp);
@@ -312,8 +297,7 @@ void exec_statements(env_t* env, ast_t* ast) {
 }
 
 void exec_assignment(env_t* env, ast_t* ast) {
-  ast_t* right;
-  right = NULL;
+  ast_t* right = NULL;
   switch(ast->data.assignment.right->type) {
     case at_function:
       right = ast->data.assignment.right;
