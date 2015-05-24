@@ -45,5 +45,7 @@ ast_t* builtin_to_bool(ast_t* ast);
 
 ast_t* builtin_replace(ast_t* str, ast_t* old, ast_t* new);
 
+ast_t* builtin_type_of(ast_t* var);
+
 
 #endif /* __BUILTIN_H__ */

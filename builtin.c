@@ -53,6 +53,8 @@ void populate_env(env_t* env) {
   set_ast_to_id(env,"dbl",create_builtin_1(&builtin_to_double));
 
   set_ast_to_id(env,"replace",create_builtin_3(&builtin_replace));
+
+  set_ast_to_id(env,"typeof",create_builtin_1(&builtin_type_of));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -90,15 +92,11 @@ ast_t* builtin_read(void) {
 
 ast_t* builtin_readln(void) {
 #define CHUNK_SIZE (80)
-  ast_t* result;
-  int c;
-  char* s;
-  size_t size;
-  size_t idx;
-  size = CHUNK_SIZE;
-  idx = 0;
-  s = (char*)check_malloc(size * sizeof(char));
-  c = fgetc(stdin);
+  ast_t* result = NULL;
+  size_t size = CHUNK_SIZE;
+  size_t idx = 0;
+  char* s = (char*)check_malloc(size * sizeof(char));
+  int c = fgetc(stdin);
   while(c >= 0 && c != '\n') {
     s[idx] = (char)((c > CHAR_MAX) ? (c - (UCHAR_MAX + 1)) : c);
     idx++;
@@ -117,9 +115,8 @@ ast_t* builtin_readln(void) {
 }
 
 ast_t* builtin_to_string(ast_t* ast) {
-  ast_t* str;
+  ast_t* str = NULL;
   char buf[50];
-  str = NULL;
   switch(ast->type) {
     case at_bool: sprintf(buf,"%s",ast->data.b == 0 ? "false" : "true"); break;
     case at_double: sprintf(buf,"%Lf",ast->data.d); break;
@@ -136,8 +133,7 @@ ast_t* builtin_to_string(ast_t* ast) {
 }
 
 ast_t* builtin_to_integer(ast_t* ast) {
-  ast_t* num;
-  num = NULL;
+  ast_t* num = NULL;
   switch(ast->type) {
     case at_bool: num = create_integer(ast->data.b == 0 ? 0 : 1); break;
     case at_double: num = create_integer((intmax_t)ast->data.d); break;
@@ -156,8 +152,7 @@ ast_t* builtin_to_integer(ast_t* ast) {
 }
 
 ast_t* builtin_to_double(ast_t* ast) {
-  ast_t* dbl;
-  dbl = NULL;
+  ast_t* dbl = NULL;
   switch(ast->type) {
     case at_bool: dbl = create_double(ast->data.b == 0 ? 0.0 : 1.0); break;
     case at_double: dbl = create_double(ast->data.d); break;
@@ -176,8 +171,7 @@ ast_t* builtin_to_double(ast_t* ast) {
 }
 
 ast_t* builtin_to_bool(ast_t* ast) {
-  ast_t* bol;
-  bol = NULL;
+  ast_t* bol = NULL;
   switch(ast->type) {
     case at_bool: bol = create_bool(ast->data.b); break;
     case at_double: bol = create_bool(ast->data.d != 0.0); break;
@@ -191,22 +185,21 @@ ast_t* builtin_to_bool(ast_t* ast) {
 
 ast_t* builtin_replace(ast_t* str, ast_t* old, ast_t* new) {
   /* TODO : implement for lists too */
-  ast_t* result;
-  ast_t* s;
-  ast_t* o;
-  ast_t* n;
-  result = NULL;
-  s = NULL;
-  o = NULL;
-  n = NULL;
-  s = builtin_to_string(str);
-  o = builtin_to_string(old);
-  n = builtin_to_string(new);
-  result = create_string(replace_str(s->data.s, o->data.s, n->data.s));
+  ast_t* s = builtin_to_string(str);
+  ast_t* o = builtin_to_string(old);
+  ast_t* n = builtin_to_string(new);
+  ast_t* result = create_string(replace_str(s->data.s, o->data.s, n->data.s));
   result->ref_count = 0;
   dec_ref(s);
   dec_ref(o);
   dec_ref(n);
+  return result;
+}
+
+ast_t* builtin_type_of(ast_t* var) {
+  char* typ = strdup(get_ast_type_name(var->type));
+  ast_t* result = create_string(typ);
+  result->ref_count = 0;
   return result;
 }
 
