@@ -38,5 +38,6 @@ void error_paramcount(position_t* pos, const char* func, int paramcount, int cal
 void error_unsupported(position_t* pos, const char* unsupported);
 void error_convert(position_t* pos, const char* from, const char* to);
 void error_astgen(position_t* pos, const char* err);
+void error_failed(position_t* pos, const char* what);
 
 #endif /* __ERROR_H__ */

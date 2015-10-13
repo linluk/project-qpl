@@ -42,19 +42,20 @@
 
 void populate_env(env_t* env) {
   /* stdin stdout */
-  set_ast_to_id(env,"print",create_builtin_1(&builtin_print));
-  set_ast_to_id(env,"println",create_builtin_1(&builtin_println));
-  set_ast_to_id(env,"read",create_builtin_0(&builtin_read));
-  set_ast_to_id(env,"readln",create_builtin_0(&builtin_readln));
+  set_ast_to_id(env, "print", create_builtin_1(&builtin_print));
+  set_ast_to_id(env, "println", create_builtin_1(&builtin_println));
+  set_ast_to_id(env, "read", create_builtin_0(&builtin_read));
+  set_ast_to_id(env, "readln", create_builtin_0(&builtin_readln));
 
   /* conversion */
-  set_ast_to_id(env,"str",create_builtin_1(&builtin_to_string));
-  set_ast_to_id(env,"int",create_builtin_1(&builtin_to_integer));
-  set_ast_to_id(env,"dbl",create_builtin_1(&builtin_to_double));
+  set_ast_to_id(env, "str", create_builtin_1(&builtin_to_string));
+  set_ast_to_id(env, "int", create_builtin_1(&builtin_to_integer));
+  set_ast_to_id(env, "dbl", create_builtin_1(&builtin_to_double));
 
-  set_ast_to_id(env,"replace",create_builtin_3(&builtin_replace));
+  set_ast_to_id(env, "replace", create_builtin_3(&builtin_replace));
 
-  set_ast_to_id(env,"typeof",create_builtin_1(&builtin_type_of));
+  set_ast_to_id(env, "typeof", create_builtin_1(&builtin_type_of));
+  set_ast_to_id(env, "run", create_builtin_1(&builtin_run));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -201,5 +202,37 @@ ast_t* builtin_type_of(ast_t* var) {
   ast_t* result = create_string(typ);
   result->ref_count = 0;
   return result;
+}
+
+ast_t* builtin_run(ast_t* command) {
+#define CHUNK_SIZE (80)
+  if(command->type != at_string) {
+    error_expected(NULL, get_ast_type_name(at_string), get_ast_type_name(command->type));
+  }
+  /* whats with stderr? do i need stderr too?? this only gives me stdout */
+  FILE* pipe = popen(command->data.s, "r");
+  if(pipe == NULL) {
+    error_failed(NULL,"popen()");
+  }
+  size_t size = CHUNK_SIZE;
+  size_t idx = 0;
+  char* s = (char*)check_malloc(size * sizeof(char));
+  int c = fgetc(pipe);
+  while(c != EOF) {
+    s[idx] = (char)((c > CHAR_MAX) ? (c - (UCHAR_MAX + 1)) : c);
+    idx++;
+    if(idx >= size) {
+      size += CHUNK_SIZE;
+      s = (char*)check_realloc(s,size * sizeof(char));
+    }
+    c = fgetc(pipe);
+  }
+  pclose(pipe);
+  s = (char*)check_realloc(s,(idx + 1) * sizeof(char));
+  s[idx] = '\0';
+  ast_t* result = create_string(s);
+  result->ref_count = 0;
+  return result;
+#undef CHUNK_SIZE
 }
 

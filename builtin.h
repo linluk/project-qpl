@@ -47,5 +47,7 @@ ast_t* builtin_replace(ast_t* str, ast_t* old, ast_t* new);
 
 ast_t* builtin_type_of(ast_t* var);
 
+ast_t* builtin_run(ast_t* command);
+
 
 #endif /* __BUILTIN_H__ */

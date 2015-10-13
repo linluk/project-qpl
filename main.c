@@ -64,9 +64,10 @@ int main(int argc, char** argv) {
     yyin = fopen(argv[1], "r");
   } else {
     yyin = stdin;
+    printf("type your code and press <CTRL> + <D> \n");
   }
 
-  //    yydebug = 1;
+  //  yydebug = 1;
 
   if(yyin == NULL) {
     printf("yyin == NULL\n");
@@ -76,7 +77,9 @@ int main(int argc, char** argv) {
 
   //  print_ast(ast,0);
 
-  fclose(yyin);
+  if (yyin != stdin) {
+    fclose(yyin);
+  }
 
   if(ast != NULL) {
 

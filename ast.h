@@ -60,7 +60,8 @@ typedef enum operator_e {
   op_lt, op_gt, op_le, op_ge,
   op_eq, op_neq,
   op_and, op_or,
-  op_cat
+  op_cat,
+  op_deref
 } operator_t;
 
 typedef struct position_s {

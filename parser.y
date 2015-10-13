@@ -107,7 +107,7 @@ expression : term T_CMPOP expression { $$ = create_expression($2, $1, $3); }
            | term T_OROP expression { $$ = create_expression($2, $1, $3); }
            | term T_ADDOP expression { $$ = create_expression($2, $1, $3); }
            | term { $$ = $1; }
-           | list { $$ = $1; }
+           /*| list { $$ = $1; }*/
            ;
 
 term : term T_ANDOP factor { $$ = create_expression($2, $1, $3); }
@@ -122,6 +122,8 @@ factor : T_INTEGER { $$ = create_integer($1); }
        | T_ID { $$ = create_identifier($1); }
        | call { $$ = $1; }
        | T_LPAREN expression T_RPAREN { $$ = $2; }
+       | list { $$ = $1; }
+       | factor T_LSQBRACKET expression T_RSQBRACKET { $$ = create_expression(op_deref, $1, $3); }
        ;
 
 conditional : if_statement elif_statements else_statement { $$ = create_conditional($1, $2, $3); }

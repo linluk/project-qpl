@@ -109,4 +109,10 @@ void error_astgen(position_t* pos, const char* err) {
   error(pos, buf);
 }
 
+void error_failed(position_t* pos, const char* what) {
+  char buf[ERROR_BUFFER_LENGTH];
+  sprintf(buf, "%s failed", what);
+  error(pos, buf);
+}
+
 

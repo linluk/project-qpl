@@ -150,28 +150,22 @@ ast_t* eval_expression(env_t* env, ast_t* ast) {
         case op_eq: result = eval_eq(env, left, right); break;
         case op_neq: result = eval_neq(env, left, right); break;
         case op_cat: result = eval_cat(env, left, right); break;
+        case op_deref: {
+          ast_t* index = eval_expression(env, right);
+          if (index->type != at_integer) {
+            // TODO: error -> index must be an integer!
+          } else {
+            switch(left->type) {
+              case at_list: result = left->data.list.elements[index->data.i];
+            }
+          }
+        }
       }
       result->ref_count = 0;
       dec_ref(left);
       dec_ref(right);
       return result;
     }
-    /* this doesn't exist anymore!
-    case at_new:{
-      // TODO : implementieren.
-      ast_t* result;
-      ast_t* datadef;
-      env_t* dataenv;
-      datadef = eval_expression(env,ast->data.newop.datadef);
-      inc_ref(datadef);
-      dataenv = create_env();
-      dataenv->parent = env;
-      exec_statements(dataenv, datadef);
-      result = create_instance(dataenv);
-      result->ref_count = 0;
-      dec_ref(datadef);
-      return result;
-    }*/
     /* no need to evaluate */
     case at_integer:
     case at_bool:
