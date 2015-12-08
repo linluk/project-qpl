@@ -51,6 +51,7 @@ ast_t* builtin_run(ast_t* command);
 
 /* file i/o */
 ast_t* builtin_fread(ast_t* filename);
+ast_t* builtin_fwrite(ast_t* filename, ast_t* content);
 
 
 

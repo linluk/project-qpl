@@ -1,4 +1,12 @@
 fn = "examples/rtti.qpl";
 s = fread(fn);
 print(s);
+print(s);
+
+fn = "examples/temp1.txt";
+fwrite(fn, "hello world\n");
+
+fn = "examples/temp2.txt";
+s = "test";
+fwrite(fn, s);
 

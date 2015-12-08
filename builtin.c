@@ -58,6 +58,7 @@ void populate_env(env_t* env) {
   set_ast_to_id(env, "run", create_builtin_1(&builtin_run));
 
   set_ast_to_id(env, "fread", create_builtin_1(&builtin_fread));
+  set_ast_to_id(env, "fwrite", create_builtin_2(&builtin_fwrite));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -268,4 +269,26 @@ ast_t* builtin_fread(ast_t* filename) {
 #undef CHUNK_SIZE
 }
 
+ast_t* builtin_fwrite(ast_t* filename, ast_t* content) {
+  if(filename->type != at_string) {
+    error_expected(NULL, get_ast_type_name(at_string), get_ast_type_name(filename->type));
+  }
+  if(content->type != at_string) {
+    error_expected(NULL, get_ast_type_name(at_string), get_ast_type_name(content->type));
+  }
+  FILE* file = fopen(filename->data.s, "w");
+  if(file == NULL) {
+    error_failed(NULL, "fopen()");
+  }
+  fprintf(file, "%s", content->data.s);
+  //fprintf(stdout, "%s", content->data.s);
+//  char c;
+//  size_t idx = 0;
+//  while( (c = content->data.s[idx]) != '\0') {
+//    fputc(c, file);
+//    idx++;
+//  }
+  fclose(file);
+  return NULL;
+}
 
