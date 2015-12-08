@@ -49,5 +49,9 @@ ast_t* builtin_type_of(ast_t* var);
 
 ast_t* builtin_run(ast_t* command);
 
+/* file i/o */
+ast_t* builtin_fread(ast_t* filename);
+
+
 
 #endif /* __BUILTIN_H__ */

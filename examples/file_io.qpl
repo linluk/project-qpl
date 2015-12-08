@@ -1,0 +1,4 @@
+fn = "examples/rtti.qpl";
+s = fread(fn);
+print(s);
+

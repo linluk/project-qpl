@@ -56,6 +56,8 @@ void populate_env(env_t* env) {
 
   set_ast_to_id(env, "typeof", create_builtin_1(&builtin_type_of));
   set_ast_to_id(env, "run", create_builtin_1(&builtin_run));
+
+  set_ast_to_id(env, "fread", create_builtin_1(&builtin_fread));
 }
 
 ast_t* builtin_print(ast_t* ast) {
@@ -235,4 +237,35 @@ ast_t* builtin_run(ast_t* command) {
   return result;
 #undef CHUNK_SIZE
 }
+
+ast_t* builtin_fread(ast_t* filename) {
+#define CHUNK_SIZE (256)
+  if(filename->type != at_string) {
+    error_expected(NULL, get_ast_type_name(at_string), get_ast_type_name(filename->type));
+  }
+  FILE* file = fopen(filename->data.s, "r");
+  if(file == NULL) {
+    error_failed(NULL, "fopen()");
+  }
+  size_t size = CHUNK_SIZE;
+  size_t idx = 0;
+  char* s = (char*)check_malloc(size * sizeof(char));
+  int c;
+  while( (c = fgetc(file)) != EOF ) {
+    s[idx] = (char)((c > CHAR_MAX) ? (c - (UCHAR_MAX + 1)) : c);
+    idx++;
+    if(idx >= size) {
+      size += CHUNK_SIZE;
+      s = (char*)check_realloc(s,size * sizeof(char));
+    }
+  }
+  fclose(file);
+  s = (char*)check_realloc(s, (idx + 1) * sizeof(char));
+  s[idx] = '\0';
+  ast_t* result = create_string(s);
+  result->ref_count = 0;
+  return result;
+#undef CHUNK_SIZE
+}
+
 
