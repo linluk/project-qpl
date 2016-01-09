@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -42,3 +42,4 @@ char is_str_int(const char* str);
 char is_str_dbl(const char* str);
 
 #endif /* __UTILS_H__ */
+

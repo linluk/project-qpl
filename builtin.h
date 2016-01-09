@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -56,3 +56,4 @@ ast_t* builtin_fwrite(ast_t* filename, ast_t* content);
 
 
 #endif /* __BUILTIN_H__ */
+

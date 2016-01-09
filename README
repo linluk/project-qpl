@@ -21,11 +21,12 @@ Use the Makefile to build it. You Dont need to configure anything, just call
 'make'. If succeeded its done.
 You need to have gcc, bison and flex installed on your system to build QPL.
 It compiles fine with these Versions:
-  gcc (Debian 4.9.2-10)
+  gcc (Debian 4.9.2-10), (Ubuntu 5.2.1)
   bison 3.0.2
   flex 2.5.39
-  glibc 2.19
-On Debian GNU/Linux 8 (jessie) 3.16.0-4-amd64.
+  glibc (Debian 2.19), (Ubuntu 2.21)
+  Debian GNU/Linux 8 (jessie) 3.16.0-4-amd64
+  Ubuntu GNU/Linux 15.10 4.2.0-23-generic x86_64
 If you experience Problems building the Application please add an issue on
 <https://github.com/linluk/project-qpl/>.
 
@@ -36,7 +37,7 @@ If you experience Problems building the Application please add an issue on
 QPL is under the GPLv3 license.  See the file <COPYING> for the full license.
 Every Source file contains a header like this:
 
-  Copyright (C) 2014 - 2015 Lukas Singer
+  Copyright (C) 2014 - 2016 Lukas Singer
 
   This file is part of 'qpl'.
 
@@ -65,7 +66,7 @@ If it is missing feel free to add it or treat it like it would be there.
 ** Source Code: **
 ==============================================================================
 Full Source Code can be found under: <https://github.com/linluk/project-qpl/>.
-We switched from svn to git due to google-code shutdown.
+I switched from svn to git due to google-code shutdown.
 Use 'git clone https://github.com/linluk/project-qpl qpl' to obtain a copy.
 
 
@@ -81,6 +82,6 @@ I speak german and english, both are fine.
 ==============================================================================
 If you are interested in helping me with development then join the mailing
 list (I will add one "soon"; just after finishing my exams and finishing the
-final year project (hopefully in the end of 2015)).
+final year project).
 
 

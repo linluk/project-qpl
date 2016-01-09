@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -351,3 +351,4 @@ void free_map(map_t* map, int free_values) {
 #ifdef MIN_MAP_SIZE
 #  undef MIN_MAP_SIZE
 #endif /* MIN_MAP_SIZE */
+

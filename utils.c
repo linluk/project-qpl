@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -146,6 +146,4 @@ char* replace_str(const char* str, const char* old, const char* new) {
   }
   return result;
 }
-
-
 

@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -41,3 +41,4 @@ void error_astgen(position_t* pos, const char* err);
 void error_failed(position_t* pos, const char* what);
 
 #endif /* __ERROR_H__ */
+

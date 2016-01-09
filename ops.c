@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -277,6 +277,4 @@ ast_t* eval_cat(env_t* env, ast_t* ast1, ast_t* ast2) {
   }
   return result;
 }
-
-
 

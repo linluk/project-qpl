@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -185,3 +185,4 @@ void print_ast(ast_t* ast, int indent);
 void free_ast(ast_t* ast);
 
 #endif /* __AST_H__ */
+

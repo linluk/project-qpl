@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- * Copyright (C) 2014 - 2015 Lukas Singer
+ * Copyright (C) 2014 - 2016 Lukas Singer
  *
  * This file is part of 'qpl'.
  *
@@ -180,5 +180,4 @@ void lex_error(void) {
 void lex_inc_line(void) {
   yylineno++;
 }
-
 
