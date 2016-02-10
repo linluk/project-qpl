@@ -1,12 +1,6 @@
 
-exit = false;
-while(exit == false) {
-  print(" >>> ");
-  cmd = readln();
-  if(cmd == "exit") {
-    exit = true;
-  } else {
-    result = run(cmd);
-    println(result);
-  }
-}
+print(" >>> ");
+cmd = readln();
+out = run(cmd);
+println(out);
+

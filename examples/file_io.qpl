@@ -1,10 +1,10 @@
-fn = "examples/rtti.qpl";
+
+fn = "examples/file_io.qpl";
 s = fread(fn);
-print(s);
 print(s);
 
 fn = "examples/temp1.txt";
-fwrite(fn, "hello world\n");
+fwrite(fn, "hello world");
 
 fn = "examples/temp2.txt";
 s = "test";
